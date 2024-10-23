@@ -64,16 +64,18 @@ echo "Installing project dependencies..."
 npm install
 
 # Step 8: Optional - Setup SSH key pair (if needed)
-echo "Setting up SSH keys (if necessary)..."
-SSH_DIR="/home/ec2-user/.ssh"
-if [ ! -f "$SSH_DIR/id_rsa" ]; then
-  ssh-keygen -t rsa -b 2048 -f $SSH_DIR/id_rsa -N "" -C "remote-dev"
-  echo "SSH key generated."
-  echo "Public key to add to GitHub:"
-  cat $SSH_DIR/id_rsa.pub
-else
-  echo "SSH key already exists."
-fi
+# Prefer key forwarding in your ssh config.
+
+# echo "Setting up SSH keys (if necessary)..."
+# SSH_DIR="/home/ec2-user/.ssh"
+# if [ ! -f "$SSH_DIR/id_rsa" ]; then
+#   ssh-keygen -t rsa -b 2048 -f $SSH_DIR/id_rsa -N "" -C "remote-dev"
+#   echo "SSH key generated."
+#   echo "Public key to add to GitHub:"
+#   cat $SSH_DIR/id_rsa.pub
+# else
+#   echo "SSH key already exists."
+# fi
 
 # Step 9: Final message
 echo "Remote development environment setup complete!"
