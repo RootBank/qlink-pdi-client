@@ -18,7 +18,8 @@ PROJECT_DIR="/home/ec2-user/qlink-xml-client"
 
 # Step 1: Update system packages
 echo "Updating system packages..."
-sudo apt-get update -y
+sudo yum update -y
+sudo yum install -y git
 
 # Step 2: Install NVM (Node Version Manager) if not installed
 if ! command -v nvm &> /dev/null
