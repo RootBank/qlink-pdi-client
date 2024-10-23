@@ -35,8 +35,6 @@ else
     echo "NVM is already installed for ec2-user."
 fi
 
-source ~/.bashrc
-
 # Step 3: Clone the project from GitHub as ec2-user
 echo "Cloning the repository..."
 if [ ! -d "$PROJECT_DIR" ]; then
@@ -52,7 +50,7 @@ cd $PROJECT_DIR
 if [ -f ".nvmrc" ]; then
     NODE_VERSION=$(cat .nvmrc)
     echo "Installing Node.js version specified in .nvmrc: $NODE_VERSION"
-    sudo -u ec2-user bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use $NODE_VERSION"
+    sudo -u ec2-user bash -c "source $NVM_DIR/nvm.sh && nvm install 20.16.0 && nvm use 20.16.0"
 else
     echo ".nvmrc file not found. Please create it in the project root to specify the Node.js version."
     exit 1
