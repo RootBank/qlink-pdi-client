@@ -35,6 +35,8 @@ else
     echo "NVM is already installed for ec2-user."
 fi
 
+source ~/.bashrc
+
 # Step 3: Clone the project from GitHub as ec2-user
 echo "Cloning the repository..."
 if [ ! -d "$PROJECT_DIR" ]; then
