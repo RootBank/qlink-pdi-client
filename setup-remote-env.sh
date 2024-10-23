@@ -43,6 +43,7 @@ else
   echo "Repository already exists in $PROJECT_DIR"
 fi
 
+sudo chown -R ec2-user:ec2-user $PROJECT_DIR
 # Step 4: Change directory to the project folder
 cd $PROJECT_DIR
 
