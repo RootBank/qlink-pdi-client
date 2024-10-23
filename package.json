@@ -1,6 +1,7 @@
 {
-  "name": "qlink-client-lib",
-  "version": "1.0.0",
+  "name": "qlink-xml-client",
+  "version": "0.0.1",
+  "description": "A client library for QLink XML API",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -12,9 +13,8 @@
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "support@root.co.za",
+  "license": "GPL-3.0",
   "dependencies": {
     "axios": "^1.7.7"
   },
