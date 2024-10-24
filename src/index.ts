@@ -1,27 +1,25 @@
-import { QLinkClient } from './client';
-import { QLinkError } from './errors';
+import { QLinkRequest, Header, Payload } from './types';
+import { sendQLinkRequest } from './services/qlinkService';
 
-const client = new QLinkClient(
-  'testUser',
-  'testPassword',
-  'https://govtest.qlink.co.za/cgi-bin/XmlProc'
-);
+// Define the human-readable request
+const header: Header = {
+  transactionType: 6,
+  paymentType: 1,
+  institution: 9999,
+  username: process.env.Q_LINK_USER || "testUser",
+  password: process.env.Q_LINK_PASSWORD || "testPassword",
+  key: "",
+};
 
-const xmlRequest = `
-    <QLINK>
-        <HDR>
-            <TRX>6</TRX>
-            <INST>9999</INST>
-            <PAY>1</PAY>
-            <USER>testUser</USER>
-            <PSWD>testPassword</PSWD>
-        </HDR>
-    </QLINK>
-`;
+const payload: Payload = {
+  someField: "Some value",
+  anotherField: 42,
+};
 
-client
-  .sendXmlTransaction(xmlRequest)
-  .then(response => console.log('Response:', response))
-  .catch((error: QLinkError) => {
-    console.error(`Error: ${error.message}, Status Code: ${error.statusCode}`);
-  });
+const request: QLinkRequest = {
+  header,
+  data: payload,
+};
+
+// Send the request using the service
+sendQLinkRequest(request);
