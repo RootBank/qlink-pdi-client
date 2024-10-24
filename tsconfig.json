@@ -6,7 +6,8 @@
     "declaration": true,   // Generate type declaration files
     "rootDir": "./src",    // Where your source files are located
     "strict": true,        // Enable strict type checking
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true,  // Ensures that node modules' type checks are skipped
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
