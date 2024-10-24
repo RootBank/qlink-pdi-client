@@ -1,4 +1,4 @@
-import { QLinkRequest, Header, Payload } from './types';  // Use the core models
+import { QLinkRequest, Header, Payload } from './types'; // Use the core models
 
 // QLink-specific header mapping
 interface QLinkHDR {
@@ -24,14 +24,16 @@ const serializeHeader = (header: Header): QLinkHDR => {
     INST: header.institution,
     USER: header.username,
     PSWD: header.password,
-    KEY: header.key || "",
+    KEY: header.key || ''
   };
 };
 
 // Serialize entire request object (including header and payload)
-export const serializeToQLinkFormat = (request: QLinkRequest): QLinkSerializedRequest => {
+export const serializeToQLinkFormat = (
+  request: QLinkRequest
+): QLinkSerializedRequest => {
   return {
     HDR: serializeHeader(request.header),
-    DATA: request.data,
+    DATA: request.data
   };
 };
