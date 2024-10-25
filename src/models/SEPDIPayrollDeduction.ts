@@ -1,3 +1,4 @@
+import { parseSEPDIPayrollDeductionFromXML } from '../serialization/SEPDIParser';
 import { serializeSEPDIPayrollDeductionToXML } from '../serialization/SEPDISerializer';
 import { SEPDIPayrollDeductionFields } from '../types';
 import { Connection } from './Connection';
@@ -47,7 +48,7 @@ export class SEPDIPayrollDeduction {
     // Add other validations as necessary
   }
 
-  async save(): Promise<void> {
+  async save(): Promise<SEPDIPayrollDeduction> {
     this.validate();
 
     const requestData = {
@@ -58,7 +59,14 @@ export class SEPDIPayrollDeduction {
     logger.debug(
       `Saving SEPDI Payroll Deduction with request data: ${JSON.stringify(requestData)}`
     );
-    await this.connection.sendRequest(requestData);
+    try {
+      const responseXML = await this.connection.sendRequest(requestData);
+
+      return parseSEPDIPayrollDeductionFromXML(this.connection, responseXML);
+    } catch (error) {
+      logger.error('Failed to save SEPDI Payroll Deduction', error);
+      throw error;
+    }
   }
 
   static async saveAll(
