@@ -1,5 +1,5 @@
 export class QLinkError extends Error {
-  public statusCode?: number; // Optional, if you want to include status codes or any other metadata
+  public statusCode?: number;
 
   constructor(message: string, statusCode?: number) {
     super(message);

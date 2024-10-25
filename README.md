@@ -83,6 +83,8 @@ callSendQLinkRequest();
 3.	**Core models stay readable:** Developers interact with institution, transactionType, etc., rather than dealing with QLink’s abbreviations.
 4.	**Separation of concerns:** Business logic, core models, and serialization logic are separated, making the codebase easier to understand and maintain.
 
+always use axiosConfig instead of axios directly.
+
 # Development Environment Setup
 
 ```bash

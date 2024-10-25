@@ -1,0 +1,11 @@
+/* eslint-disable no-unused-vars */
+export enum EmployeeStatus {
+  CURRENT = 0,
+  TERMINATE_SERVICE = 1,
+  LEAVE_WITHOUT_PAY_NO_PERMISSION = 2,
+  LEAVE_WITHOUT_PAY_WITH_PERMISSION = 3,
+  FROZEN = 4,
+  CANCELLED = 5,
+  TRANSACTION_BARRED = 6,
+  CURRENT_SUSPENDED = 9
+}
