@@ -4,6 +4,7 @@ import { QLinkRequest, BulkQLinkRequest, ConnectionFields } from '../types';
 import { serializeHeaderToXML } from '../serialization/HeaderSerializer';
 import { Logger } from '../utils/Logger';
 import Config from '../config';
+import { TransactionType } from '../enums/TransactionType';
 
 const config = Config.getInstance();
 const logger = new Logger(config.logLevel);
@@ -37,27 +38,28 @@ export class Connection {
       !institution ||
       !payrollIdentifier ||
       !username ||
-      !password ||
-      !effectiveSalaryMonth
+      !password
     ) {
       logger.error('Missing required connection fields');
       throw new QLinkError('All required connection fields must be provided');
     }
-    if (!/^\d{6}$/.test(effectiveSalaryMonth)) {
-      logger.error('Invalid effective salary month format');
-      throw new QLinkError(
-        'Effective Salary Month (SALMON) must be in CCYYMM format'
-      );
-    }
-    const currentYearMonth = new Date()
-      .toISOString()
-      .slice(0, 7)
-      .replace('-', '');
-    if (effectiveSalaryMonth < currentYearMonth) {
-      logger.error('Effective Salary Month is in the past');
-      throw new QLinkError(
-        'Effective Salary Month (SALMON) date must not be in the past'
-      );
+    if (transaction_type === TransactionType.Q_LINK_TRANSACTIONS) {
+      if (!effectiveSalaryMonth || !/^\d{6}$/.test(effectiveSalaryMonth)) {
+        logger.error('Invalid effective salary month format');
+        throw new QLinkError(
+          'Effective Salary Month (SALMON) must be in CCYYMM format'
+        );
+      }
+      const currentYearMonth = new Date()
+        .toISOString()
+        .slice(0, 7)
+        .replace('-', '');
+      if (effectiveSalaryMonth < currentYearMonth) {
+        logger.error('Effective Salary Month is in the past');
+        throw new QLinkError(
+          'Effective Salary Month (SALMON) date must not be in the past'
+        );
+      }
     }
   }
 
@@ -105,7 +107,7 @@ export class Connection {
     }
   }
 
-  public async sendRequest(request: QLinkRequest<any>): Promise<void> {
+  public async sendRequest(request: QLinkRequest<any>): Promise<string> {
     const headerXML = this.getSerializedHeaderXML();
     const dataXML = request.data.toXML();
     const xmlData = this.wrapInQLink(headerXML, dataXML);
@@ -117,8 +119,10 @@ export class Connection {
       const response = await axiosInstance.post('', xmlData);
       logger.info('Received response from QLink');
       this.handleQLinkResponseErrors(response.data);
+      return response.data;
     } catch (error: any) {
       this.handleExceptions(error);
+      throw new Error('Request failed and no response was received.');
     }
   }
 

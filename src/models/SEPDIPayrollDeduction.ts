@@ -1,6 +1,6 @@
 import { serializeSEPDIPayrollDeductionToXML } from '../serialization/SEPDISerializer';
 import { SEPDIPayrollDeductionFields } from '../types';
-import { Connection } from '../services/Connection';
+import { Connection } from './Connection';
 import { QLinkError } from '../errors';
 import { Logger } from '../utils/Logger';
 import Config from '../config';

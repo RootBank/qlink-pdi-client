@@ -1,10 +1,10 @@
+# QLink Client Library
 
-# Example Usage
-
-Here’s an example of how to use the `qlink-client-lib` to send a request to the QLink API and handle errors.
+This library provides a client for sending requests to the QLink API, specifically supporting payroll deductions (SEPDI, FEPDI) and error handling.
 
 ## Prerequisites
-Make sure you have the required environment variables configured in a `.env` file:
+
+To use the `qlink-client-lib`, ensure you have the following environment variables configured in a `.env` file:
 
 ```bash
 Q_LINK_USER=yourUsername
@@ -12,108 +12,135 @@ Q_LINK_PASSWORD=yourPassword
 Q_LINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
 ```
 
-## Step-by-step example
+## Usage Example
 
-```ts
-import { QLinkRequest } from './types';  // Import the main types
-import { sendQLinkRequest } from './services/qlinkService';  // Import the service for sending the request
-import { QLinkError } from './errors';  // Import custom error for handling specific errors
+Here’s how to use the library to establish a connection, send a SEPDI deduction, and perform bulk FEPDI deductions.
+Note: All SEPDI and FEPDI transactions types (TRX) must be set to Q_LINK_TRANSACTIONS (5)
 
-// Function to send a QLink request
-const callSendQLinkRequest = async () => {
-  try {
-    // Create the header for the QLink request
-    const header = {
-      transactionType: 6,  // Transaction type
-      paymentType: 1,      // Payment type
-      institution: 9999,   // Your institution ID
-      username: process.env.Q_LINK_USER || 'defaultUser',  // Username from environment
-      password: process.env.Q_LINK_PASSWORD || 'defaultPassword',  // Password from environment
-      key: "",  // Optional key
-    };
+### Step-by-Step Example
 
-    // Create the payload for the QLink request
-    const payload = {
-      field1: 'Example Value 1',
-      field2: 1000,
-    };
+```typescript
+import { Connection } from './services/Connection';
+import { DeductionType } from './enums/DeductionType';
+import { PayrollDeductionFactory } from './factories/PayrollDeductionFactory';
+import { PayrollIdentifier } from './enums/PayrollIdentifier';
+import { TransactionType } from './enums/TransactionType';
 
-    // Combine the header and payload into a QLinkRequest object
-    const request: QLinkRequest = {
-      header,
-      data: payload,
-    };
+async function run() {
+  // Define connection configuration
+  const connection = new Connection({
+    transaction_type: TransactionType.COMMUNICATION_TEST,
+    institution: 9999,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    username: 'MyUserName',
+    password: 'MyPassword',
+    effectiveSalaryMonth: '202501'
+  });
 
-    // Send the request using the qlink-client-lib
-    await sendQLinkRequest(request);
+  // Single SEPDI Deduction
+  const sepdiFields = {
+    employeeNumber: '12345',
+    amount: 500,
+    deductionType: '01',
+    startDate: '20250101',
+    surname: 'Doe',
+    referenceNumber: 'REF123'
+  };
+  const sepdiDeduction = PayrollDeductionFactory.create(
+    connection,
+    DeductionType.SEPDI,
+    sepdiFields
+  );
 
-    // If the request completes successfully
-    console.log('Request completed successfully.');
+  await sepdiDeduction.save();
 
-  } catch (error) {
-    // Handle any errors that occur during the request
-    if (error instanceof QLinkError) {
-      // Handle QLink-specific errors or HTTP errors
-      console.error(`Error occurred: ${error.message} (Status: ${error.statusCode})`);
-    } else {
-      // Handle unexpected errors
-      console.error('An unexpected error occurred:', error);
+  // Bulk FEPDI Deductions
+  const bulkFepdiFields = [
+    {
+      employeeNumber: '12345',
+      amount: 500,
+      deductionType: '01',
+      startDate: '20250101',
+      surname: 'Doe',
+      referenceNumber: 'REF123'
+    },
+    {
+      employeeNumber: '67890',
+      amount: 300,
+      deductionType: '02',
+      startDate: '20250101',
+      surname: 'Smith',
+      referenceNumber: 'REF456'
     }
-  }
-};
+  ];
+  const fepdiDeductions = PayrollDeductionFactory.createAll(
+    connection,
+    DeductionType.FEPDI,
+    bulkFepdiFields
+  );
+  await connection.sendBulkRequest({
+    header: connection.connectionConfig,
+    data: fepdiDeductions
+  });
+}
 
-// Call the function to send the request
-callSendQLinkRequest();
+// Run the async function
+run();
 ```
 
 ### Explanation
 
-- QLinkRequest: The request is composed of a header and data payload, and you can customize these values as needed.
-- Environment Variables: The environment variables for the QLink API (Q_LINK_USER, Q_LINK_PASSWORD, Q_LINK_URL) are loaded from a .env file. Ensure you have set these values in your project.
-- Error Handling: The example uses try/catch to handle:
-- QLink-specific errors: If there is a problem with the request (e.g., wrong credentials, malformed data), a QLinkError is thrown with details of the error.
-- HTTP errors: Errors related to the HTTP request (e.g., timeouts, server errors) are also caught and rethrown as QLinkError.
-- Unexpected errors: Any unforeseen errors are caught and logged.
+- **Connection Configuration**: Initializes the connection using `Connection` with environment-based configuration and transaction details.
+- **Deduction Creation**: Creates both single and bulk deductions using `PayrollDeductionFactory` and sends them with `save` and `saveAll`.
+- **Error Handling**: Wrap calls in try/catch blocks to handle custom `QLinkError` or unexpected errors.
 
+## Development Environment Setup
 
-# A note on modelling
+1. Ensure your public IP address is registered with QLink by running:
+   ```bash
+   curl ifconfig.me
+   ```
 
-1.	**Human-readable models are first-class citizens** in the code. These models are used throughout the business logic.
-2.	**Serialization is explicit:** The transformation to QLink’s DSL happens at the serialization stage, right before sending the request.
-3.	**Core models stay readable:** Developers interact with institution, transactionType, etc., rather than dealing with QLink’s abbreviations.
-4.	**Separation of concerns:** Business logic, core models, and serialization logic are separated, making the codebase easier to understand and maintain.
+2. Set up the development environment:
+   ```bash
+   curl -o setup-remote-env.sh https://raw.githubusercontent.com/RootBank/qlink-xml-client/refs/heads/main/setup-remote-env.sh
+   chmod +x setup-remote-env.sh
+   sudo ./setup-remote-env.sh
+   ```
 
-always use axiosConfig instead of axios directly.
+3. Configure SSH access for your remote EC2 environment:
+   ```bash
+   # ~/.ssh/config
+   Host sandbox-dev
+       HostName <ip address> # from private subnet
+       User ec2-user
+       IdentityFile ~/.ssh/id_ed25519
+       ProxyJump sandbox-jumphost
 
-# Development Environment Setup
+   Host sandbox-jumphost
+       HostName <ip address> # from public subnet
+       User ec2-user
+       IdentityFile ~/.ssh/id_ed25519
+       ForwardAgent yes
+   ```
+
+## Design Notes
+
+1. **Human-Readable Models**: Models are designed with human-readable names (e.g., `institution`, `transactionType`) for code clarity.
+2. **Explicit Serialization**: Conversion to QLink’s format happens at the serialization stage, ensuring business logic remains readable.
+3. **Separated Concerns**: Business logic, core models, and serialization are distinct for maintainability.
+4. **Error Handling**: Custom errors are used for handling QLink-specific and HTTP errors gracefully.
+
+## Example Environment Variables
+
+Make sure to include these environment variables in your `.env` file:
 
 ```bash
-# confirm your public IP from your NAT gateway is registered with QLink.
-curl ifconfig.me
+Q_LINK_USER=yourUsername
+Q_LINK_PASSWORD=yourPassword
+Q_LINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
+Q_LINK_INSTITUTION_ID=9999
+Q_LINK_LOG_LEVEL=DEBUG
 ```
 
-```bash
-curl -o setup-remote-env.sh https://raw.githubusercontent.com/RootBank/qlink-xml-client/refs/heads/main/setup-remote-env.sh
-
-chmod +x setup-remote-env.sh
-sudo ./setup-remote-env.sh
-```
-
-```bash
-# $ cat ~/.ssh/config
-# ...other configs...
-
-Host sandbox-dev
-    HostName <ip address> # from private subnet
-    User ec2-user
-    #IdentityFile ~/.ssh/keypair.pem
-    IdentityFile ~/.ssh/id_ed25519
-    ProxyJump sandbox-jumphost
-
-Host sandbox-jumphost
-    HostName <ip address> # from public subnet
-    User ec2-user
-    #IdentityFile ~/.ssh/keypair.pem
-    IdentityFile ~/.ssh/id_ed25519
-    ForwardAgent yes
-```
+Now you’re all set to integrate with the QLink API using `qlink-client-lib`!

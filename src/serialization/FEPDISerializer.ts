@@ -7,7 +7,7 @@ export function serializeFEPDIPayrollDeductionToXML(
 ): string {
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   const sepdiData = {
-    TXN: {
+    DATA: {
       ADDITIONAL_PAYMENTS: fields.additionalPayments || '',
       AMOUNT: fields.amount.toString(),
       APP_CODE: fields.appCode || '',

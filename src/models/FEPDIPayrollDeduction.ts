@@ -1,6 +1,6 @@
 import { serializeFEPDIPayrollDeductionToXML } from '../serialization/FEPDISerializer';
 import { FEPDIPayrollDeductionFields } from '../types';
-import { Connection } from '../services/Connection';
+import { Connection } from './Connection';
 import { QLinkError } from '../errors';
 
 export class FEPDIPayrollDeduction {

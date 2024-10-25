@@ -1,7 +1,7 @@
 /* eslint-disable indent */
 // src/factories/PayrollDeductionFactory.ts
 
-import { Connection } from '../services/Connection';
+import { Connection } from '../models/Connection';
 import { DeductionType } from '../enums/DeductionType';
 import { SEPDIPayrollDeduction } from '../models/SEPDIPayrollDeduction';
 import { FEPDIPayrollDeduction } from '../models/FEPDIPayrollDeduction';

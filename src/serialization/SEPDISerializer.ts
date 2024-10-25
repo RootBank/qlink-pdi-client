@@ -1,3 +1,4 @@
+import { TranType } from '../enums/TranType';
 import { SEPDIPayrollDeductionFields } from '../types';
 import { js2xml } from 'xml-js';
 
@@ -7,7 +8,7 @@ export function serializeSEPDIPayrollDeductionToXML(
 ): string {
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   const sepdiData = {
-    TXN: {
+    DATA: {
       ADMIN_COST: fields.adminCost || '',
       AMOUNT: fields.amount.toString(),
       APP_CODE: fields.appCode || '',
@@ -33,7 +34,7 @@ export function serializeSEPDIPayrollDeductionToXML(
       RES_NUMBER: fields.resNumber || '',
       START_DATE: fields.startDate,
       SURNAME: fields.surname,
-      TRANTYPE: fields.transactionType || ''
+      TRANTYPE: fields.transactionType || TranType.NONE
     }
   };
   return js2xml(sepdiData, options);

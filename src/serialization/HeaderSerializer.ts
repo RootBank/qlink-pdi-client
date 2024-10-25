@@ -10,7 +10,7 @@ export function serializeHeaderToXML(fields: ConnectionFields): string {
       PAY: fields.payrollIdentifier,
       USER: fields.username,
       PSWD: fields.password,
-      SALMON: fields.effectiveSalaryMonth,
+      SALMON: fields.effectiveSalaryMonth || '',
       KEY: fields.key || ''
     }
   };

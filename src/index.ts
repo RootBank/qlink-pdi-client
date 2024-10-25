@@ -1,13 +1,41 @@
-import { Connection } from './services/Connection';
+import { Connection } from './models/Connection';
 import { DeductionType } from './enums/DeductionType';
 import { PayrollDeductionFactory } from './factories/PayrollDeductionFactory';
 import { PayrollIdentifier } from './enums/PayrollIdentifier';
 import { TransactionType } from './enums/TransactionType';
+import { CommunicationTest } from './models/CommunicationTest';
+import { Employee } from './models/Employee';
 
 async function run() {
+  // find an employee
+  const employeeConnection = new Connection({
+    transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
+    institution: 1234,
+    payrollIdentifier: PayrollIdentifier.ESKOM,
+    username: 'testUser',
+    password: 'testPassword'
+  });
+  const employee = new Employee(employeeConnection, {
+    employeeNumber: '12345',
+    idNumber: '54321'
+  });
+  const foundEmployee = await employee.find();
+  console.log(foundEmployee);
+
+  // Define connection configuration
+  const test_connection = new Connection({
+    transaction_type: TransactionType.COMMUNICATION_TEST,
+    institution: 1234,
+    payrollIdentifier: PayrollIdentifier.ESKOM,
+    username: 'testUser',
+    password: 'testPassword'
+  });
+  const comms_test = new CommunicationTest(test_connection);
+  comms_test.save();
+
   // Define connection configuration
   const connection = new Connection({
-    transaction_type: TransactionType.COMMUNICATION_TEST,
+    transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
     institution: 1234,
     payrollIdentifier: PayrollIdentifier.ESKOM,
     username: 'testUser',
