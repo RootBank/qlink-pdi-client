@@ -3,6 +3,8 @@ import { EmployeeFields } from '../types';
 import { Connection } from '../models/Connection';
 import { Employee } from '../models/Employee';
 import { QLinkError } from '../errors';
+import { EmployeeStatusReason } from '../enums/EmployeeStatusReason';
+import { EmployeeStatus } from '../enums/EmployeeStatus';
 
 /**
  * Parses XML data into an Employee instance.
@@ -21,6 +23,10 @@ export async function parseEmployeeFromXML(
       ignoreAttrs: true
     });
 
+    const empStatusValue = parseInt(parsedData.DATA?.EMP_STATUS || '', 10);
+    // eslint-disable-next-line prettier/prettier
+    const empStatusReasonValue = parseInt(parsedData.DATA?.EMP_STATUS_RSN || '', 10);
+
     // Map parsed fields to EmployeeFields
     const employeeFields: Partial<EmployeeFields> = {
       employeeNumber: parsedData.DATA?.EMPL_NO || '',
@@ -29,8 +35,14 @@ export async function parseEmployeeFromXML(
       appCode: parsedData.DATA?.APP_CODE || '',
       birthDate: parsedData.DATA?.BIRTHDATE || '',
       contactPerson: parsedData.DATA?.CONTACT_PERSON || '',
-      empStatus: parsedData.DATA?.EMP_STATUS || '',
-      empStatusReason: parsedData.DATA?.EMP_STATUS_RSN || '',
+      empStatus:
+        empStatusValue in EmployeeStatus
+          ? EmployeeStatus[empStatusValue]
+          : undefined,
+      empStatusReason:
+        empStatusReasonValue in EmployeeStatusReason
+          ? EmployeeStatusReason[empStatusReasonValue]
+          : undefined,
       empName: parsedData.DATA?.EMP_NAME || '',
       payOrg: parsedData.DATA?.PAY_ORG || '',
       payPoint: parsedData.DATA?.PAY_POINT || '',
