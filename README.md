@@ -144,3 +144,12 @@ Q_LINK_LOG_LEVEL=DEBUG
 ```
 
 Now you’re all set to integrate with the QLink API using `qlink-client-lib`!
+
+# TODO
+- Option 7 - Change Password Request:
+- Option 8 - UPDATE SEQUENCE NUMBER REQUEST
+- Option 9 - Maintenance Fuel Transactions (QFUL) Request:
+- Option 10 - Maintenance Transactions Request:
+- FEPDI parser
+- MEPDI full implementation
+- LEPDI full implementation
