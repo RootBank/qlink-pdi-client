@@ -12,10 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20]
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -23,23 +19,25 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '20'
 
       - name: Install dependencies
         run: npm install
 
-      - name: Install Istanbul Badges
-        run: npm install -g istanbul-badges-readme
-
       - name: Run tests with coverage
-        run: npm test -- --coverage --json --outputFile=test-results.json
+        run: npm test -- --coverage
 
       - name: Generate Coverage Badge
         run: |
-          npx istanbul-badges-readme --coverageDir=coverage --outputDir=coverage/badge
-        continue-on-error: true
+          if [ -f coverage/coverage-summary.json ]; then
+            npx istanbul-badges-readme --coverageDir=coverage --outputDir=coverage/badge
+          else
+            echo "Coverage summary not found, skipping badge generation."
+            exit 1
+          fi
 
       - name: Upload Coverage Badge
+        if: success()
         uses: actions/upload-artifact@v3
         with:
           name: coverage-badge

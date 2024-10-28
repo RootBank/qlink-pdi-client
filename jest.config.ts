@@ -11,7 +11,7 @@ const config: Config = {
   },
   collectCoverage: true,
   coverageDirectory: 'coverage',
-  coverageReporters: ['text', 'lcov'],
+  coverageReporters: ['json', 'text', 'lcov'],
   setupFiles: ['<rootDir>/jest.setup.ts'],
 };
 
