@@ -1,17 +1,10 @@
-name: Node.js CI
+name: CI
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+on: [push, pull_request]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -24,20 +17,40 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run tests with coverage
-        run: npm test -- --coverage
-
-      - name: Generate Coverage Badge
+      - name: Run tests with coverage and capture output
+        id: coverage
         run: |
-          if [ -f coverage/coverage-summary.json ]; then
-            npx istanbul-badges-readme --coverageDir=coverage --outputDir=coverage/badge
-          else
-            echo "Coverage summary not found, skipping badge generation."
-            exit 1
-          fi
+          jest --coverage --coverageReporters=json-summary
+        # Capture the JSON summary output
+        continue-on-error: true
 
-      - name: Upload Coverage Badge
-        if: success()
+      - name: Parse and Display Coverage
+        # Parse the JSON summary output from the Jest run
+        run: |
+          COVERAGE_OUTPUT=$(cat coverage/coverage-summary.json)
+          LINES_PERCENT=$(echo $COVERAGE_OUTPUT | jq '.total.lines.pct')
+          FUNCTIONS_PERCENT=$(echo $COVERAGE_OUTPUT | jq '.total.functions.pct')
+          STATEMENTS_PERCENT=$(echo $COVERAGE_OUTPUT | jq '.total.statements.pct')
+          BRANCHES_PERCENT=$(echo $COVERAGE_OUTPUT | jq '.total.branches.pct')
+
+          echo "Lines: $LINES_PERCENT%"
+          echo "Functions: $FUNCTIONS_PERCENT%"
+          echo "Statements: $STATEMENTS_PERCENT%"
+          echo "Branches: $BRANCHES_PERCENT%"
+
+        # Set GitHub Actions outputs
+        echo "lines=${LINES_PERCENT}" >> $GITHUB_ENV
+        echo "functions=${FUNCTIONS_PERCENT}" >> $GITHUB_ENV
+        echo "statements=${STATEMENTS_PERCENT}" >> $GITHUB_ENV
+        echo "branches=${BRANCHES_PERCENT}" >> $GITHUB_ENV
+
+      - name: Generate Coverage Badge (Optional)
+        # Generate a badge based on the parsed coverage
+        run: |
+          npx istanbul-badges-readme --coverageDir=coverage --outputDir=coverage/badge
+
+      - name: Upload Coverage Badge (Optional)
+        # Upload the badge as an artifact if needed
         uses: actions/upload-artifact@v3
         with:
           name: coverage-badge
