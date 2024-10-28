@@ -1,10 +1,15 @@
+![Node LTS](https://img.shields.io/badge/node-%3E%3D%2020.0.0-brightgreen)
+![License](https://img.shields.io/github/license/RootBank/qlink-xml-client)
+![Test Coverage](https://github.com/RootBank/qlink-xml-client/blob/main/coverage/badge.svg)
+![CI](https://github.com/RootBank/qlink-xml-client/actions/workflows/ci.yml/badge.svg)
+
 # QLink Client Library
 
 This library provides a client for sending requests to the QLink API, specifically supporting payroll deductions (SEPDI, FEPDI) and error handling.
 
 ## Prerequisites
 
-To use the `qlink-client-lib`, ensure you have the following environment variables configured in a `.env` file:
+To use the `qlink-xml-client`, ensure you have the following environment variables configured in a `.env` file:
 
 ```bash
 Q_LINK_USER=yourUsername
