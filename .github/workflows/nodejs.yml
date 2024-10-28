@@ -38,11 +38,11 @@ jobs:
           echo "Statements: $STATEMENTS_PERCENT%"
           echo "Branches: $BRANCHES_PERCENT%"
 
-        # Set GitHub Actions outputs
-        echo "lines=${LINES_PERCENT}" >> $GITHUB_ENV
-        echo "functions=${FUNCTIONS_PERCENT}" >> $GITHUB_ENV
-        echo "statements=${STATEMENTS_PERCENT}" >> $GITHUB_ENV
-        echo "branches=${BRANCHES_PERCENT}" >> $GITHUB_ENV
+          # Set GitHub Actions outputs
+          echo "lines=${LINES_PERCENT}" >> $GITHUB_ENV
+          echo "functions=${FUNCTIONS_PERCENT}" >> $GITHUB_ENV
+          echo "statements=${STATEMENTS_PERCENT}" >> $GITHUB_ENV
+          echo "branches=${BRANCHES_PERCENT}" >> $GITHUB_ENV
 
       - name: Generate Coverage Badge (Optional)
         # Generate a badge based on the parsed coverage
