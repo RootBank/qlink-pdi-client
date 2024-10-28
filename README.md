@@ -1,7 +1,5 @@
 ![Node LTS](https://img.shields.io/badge/node-%3E%3D%2020.0.0-brightgreen)
 ![License](https://img.shields.io/github/license/RootBank/qlink-xml-client)
-![Test Coverage](https://github.com/RootBank/qlink-xml-client/blob/main/coverage/badge.svg)
-![CI](https://github.com/RootBank/qlink-xml-client/actions/workflows/ci.yml/badge.svg)
 
 # QLink Client Library
 
