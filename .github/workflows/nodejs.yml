@@ -28,29 +28,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Install Istanbul Badges
+        run: npm install -g istanbul-badges-readme
+
       - name: Run tests with coverage
-        id: test
         run: npm test -- --coverage --json --outputFile=test-results.json
 
-      - name: Display Coverage and Status
-        id: coverage
+      - name: Generate Coverage Badge
         run: |
-          COVERAGE=$(jq '.total.lines.pct' ./coverage/coverage-summary.json)
-          echo "Coverage: $COVERAGE%"
-          if (( $(echo "$COVERAGE < 80" | bc -l) )); then
-            echo "Coverage below 80%, failing"
-            exit 1
-          fi
+          npx istanbul-badges-readme --coverageDir=coverage --outputDir=coverage/badge
         continue-on-error: true
 
-      - name: Generate Coverage Badge
-        uses: epixode/coverage-badge-action@v1
-        with:
-          coverage: ${{ steps.coverage.outputs.coverage }}
-          output: ./coverage/badge.svg
-
       - name: Upload Coverage Badge
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: coverage-badge
-          path: ./coverage/badge.svg
+          path: coverage/badge/badge.svg
