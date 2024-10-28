@@ -8,21 +8,6 @@ import { Employee } from './models/Employee';
 import Config from './config';
 
 async function run() {
-  // find an employee
-  // const employeeConnection = new Connection({
-  //   transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
-  //   institution: 1234,
-  //   payrollIdentifier: PayrollIdentifier.PERSAL,
-  //   username: 'testUser',
-  //   password: 'testPassword'
-  // });
-  // const employee = new Employee(employeeConnection, {
-  //   employeeNumber: '12345',
-  //   idNumber: '54321'
-  // });
-  // const foundEmployee = await employee.find();
-  // console.log(foundEmployee);
-
   // Define connection configuration
   const config = Config.getInstance();
   console.log(config);
@@ -35,6 +20,20 @@ async function run() {
   });
   const comms_test = new CommunicationTest(test_connection);
   comms_test.save();
+
+  // find an employee
+  const employeeConnection = new Connection({
+    transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    username: config.qLinkUser,
+    password: config.qLinkPassword,
+    institution: config.institutionId,
+  });
+  const employee = new Employee(employeeConnection, {
+    employeeNumber: '12510814',
+  });
+  const foundEmployee = await employee.find();
+  console.log(foundEmployee);
 
   // Define connection configuration
   // const connection = new Connection({

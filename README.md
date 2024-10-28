@@ -13,6 +13,8 @@ To use the `qlink-xml-client`, ensure you have the following environment variabl
 Q_LINK_USER=yourUsername
 Q_LINK_PASSWORD=yourPassword
 Q_LINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
+Q_LINK_INSTITUTION_ID=9999
+Q_LINK_LOG_LEVEL=DEBUG
 ```
 
 ## Usage Example
@@ -31,14 +33,17 @@ import { TransactionType } from './enums/TransactionType';
 
 async function run() {
   // Define connection configuration
+  const config = Config.getInstance();
+
   const connection = new Connection({
     transaction_type: TransactionType.COMMUNICATION_TEST,
-    institution: 9999,
     payrollIdentifier: PayrollIdentifier.PERSAL,
-    username: 'MyUserName',
-    password: 'MyPassword',
-    effectiveSalaryMonth: '202501'
+    username: config.qLinkUser,
+    password: config.qLinkPassword,
+    institution: config.institutionId,
   });
+  const comms_test = new CommunicationTest(connection);
+  comms_test.save();
 
   // Single SEPDI Deduction
   const sepdiFields = {
