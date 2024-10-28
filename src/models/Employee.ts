@@ -11,7 +11,7 @@ const logger = new Logger(config.logLevel);
 
 export class Employee {
   private connection: Connection;
-  private fields: Partial<EmployeeFields>;
+  public fields: Partial<EmployeeFields>;
 
   constructor(connection: Connection, fields: Partial<EmployeeFields> = {}) {
     this.connection = connection;

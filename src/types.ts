@@ -103,10 +103,10 @@ export interface EmployeeFields {
   appCode?: string;
   birthDate?: string;
   contactPerson?: string;
-  emplNumber: string; // EMPLNO (response)
+  emplNumber?: string; // EMPLNO (response)
   empName?: string;
-  empStatus?: string; // Employee status code (e.g., 0 = Current)
-  empStatusReason?: string; // Reason for the status (e.g., 0 = Current)
+  empStatus?: number; // Employee status code (e.g., 0 = Current)
+  empStatusReason?: number; // Reason for the status (e.g., 0 = Current)
   intermediaryId?: string;
   loanAmount?: string;
   newDeductType?: string;

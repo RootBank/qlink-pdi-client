@@ -125,21 +125,4 @@ export class Connection {
       throw new Error('Request failed and no response was received.');
     }
   }
-
-  public async sendBulkRequest(request: BulkQLinkRequest<any>): Promise<void> {
-    const headerXML = this.getSerializedHeaderXML();
-    const bulkDataXML = request.data.map(item => item.toXML()).join('');
-    const xmlData = this.wrapInQLink(headerXML, bulkDataXML);
-
-    logger.info('Sending bulk QLink request');
-    logger.debug(`Bulk Request XML: ${xmlData}`);
-
-    try {
-      const response = await axiosInstance.post('', xmlData);
-      logger.info('Received response from QLink for bulk request');
-      this.handleQLinkResponseErrors(response.data);
-    } catch (error: any) {
-      this.handleExceptions(error);
-    }
-  }
 }

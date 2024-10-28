@@ -23,36 +23,36 @@ export async function parseEmployeeFromXML(
       ignoreAttrs: true
     });
 
-    const empStatusValue = parseInt(parsedData.DATA?.EMP_STATUS || '', 10);
+    const empStatusValue = parseInt(parsedData.QLINK?.DATA?.EMP_STATUS || '', 10);
     // eslint-disable-next-line prettier/prettier
-    const empStatusReasonValue = parseInt(parsedData.DATA?.EMP_STATUS_RSN || '', 10);
+    const empStatusReasonValue = parseInt(parsedData.QLINK?.DATA?.EMP_STATUS_RSN || '', 10);
 
     // Map parsed fields to EmployeeFields
     const employeeFields: Partial<EmployeeFields> = {
-      employeeNumber: parsedData.DATA?.EMPL_NO || '',
-      idNumber: parsedData.DATA?.IDNO || '',
-      referenceNumber: parsedData.DATA?.REFERENCE_NO || '',
-      appCode: parsedData.DATA?.APP_CODE || '',
-      birthDate: parsedData.DATA?.BIRTHDATE || '',
-      contactPerson: parsedData.DATA?.CONTACT_PERSON || '',
+      employeeNumber: parsedData.QLINK?.DATA?.EMPL_NO || '',
+      idNumber: parsedData.QLINK?.DATA?.IDNO || '',
+      referenceNumber: parsedData.QLINK?.DATA?.REFERENCE_NO || '',
+      appCode: parsedData.QLINK?.DATA?.APP_CODE || '',
+      birthDate: parsedData.QLINK?.DATA?.BIRTHDATE || '',
+      contactPerson: parsedData.QLINK?.DATA?.CONTACT_PERSON || '',
       empStatus:
         empStatusValue in EmployeeStatus
-          ? EmployeeStatus[empStatusValue]
+          ? empStatusValue
           : undefined,
       empStatusReason:
         empStatusReasonValue in EmployeeStatusReason
-          ? EmployeeStatusReason[empStatusReasonValue]
+          ? empStatusReasonValue
           : undefined,
-      empName: parsedData.DATA?.EMP_NAME || '',
-      payOrg: parsedData.DATA?.PAY_ORG || '',
-      payPoint: parsedData.DATA?.PAY_POINT || '',
-      payBur: parsedData.DATA?.PAYBUR || '',
-      percentage: parsedData.DATA?.PERCENTAGE || '',
-      postalCode: parsedData.DATA?.POSTAL_CODE || '',
-      resignationDate: parsedData.DATA?.RESIGNATION_DATE || '',
-      surname: parsedData.DATA?.SURNAME || '',
-      telephone: parsedData.DATA?.TELEPHONE || '',
-      tempInd: parsedData.DATA?.TEMP_IND || ''
+      empName: parsedData.QLINK?.DATA?.EMP_NAME || '',
+      payOrg: parsedData.QLINK?.DATA?.PAY_ORG || '',
+      payPoint: parsedData.QLINK?.DATA?.PAY_POINT || '',
+      payBur: parsedData.QLINK?.DATA?.PAYBUR || '',
+      percentage: parsedData.QLINK?.DATA?.PERCENTAGE || '',
+      postalCode: parsedData.QLINK?.DATA?.POSTAL_CODE || '',
+      resignationDate: parsedData.QLINK?.DATA?.RESIGNATION_DATE || '',
+      surname: parsedData.QLINK?.DATA?.SURNAME || '',
+      telephone: parsedData.QLINK?.DATA?.TELEPHONE || '',
+      tempInd: parsedData.QLINK?.DATA?.TEMP_IND || ''
     };
 
     // Instantiate and return an Employee with populated fields

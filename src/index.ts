@@ -59,35 +59,6 @@ async function run() {
   );
 
   await sepdiDeduction.save();
-
-  // Bulk FEPDI Deductions using only compulsory fields
-  const bulkFepdiFields = [
-    {
-      employeeNumber: '12345',
-      amount: 500,
-      deductionType: '01',
-      startDate: '20250101',
-      surname: 'Doe',
-      referenceNumber: 'REF123'
-    },
-    {
-      employeeNumber: '67890',
-      amount: 300,
-      deductionType: '02',
-      startDate: '20250101',
-      surname: 'Smith',
-      referenceNumber: 'REF456'
-    }
-  ];
-  const fepdiDeductions = PayrollDeductionFactory.createAll(
-    connection,
-    DeductionType.FEPDI,
-    bulkFepdiFields
-  );
-  await connection.sendBulkRequest({
-    header: connection.connectionConfig,
-    data: fepdiDeductions
-  });
 }
 
 // Run the async function

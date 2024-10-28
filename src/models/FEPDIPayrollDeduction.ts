@@ -46,17 +46,4 @@ export class FEPDIPayrollDeduction {
       data: this
     });
   }
-
-  static async saveAll(
-    connection: Connection,
-    data: FEPDIPayrollDeductionFields[]
-  ): Promise<void> {
-    const bulkDeductions = data.map(
-      fields => new FEPDIPayrollDeduction(connection, fields)
-    );
-    await connection.sendBulkRequest({
-      header: connection.connectionConfig,
-      data: bulkDeductions
-    });
-  }
 }

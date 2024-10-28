@@ -1,14 +1,19 @@
 {
   "compilerOptions": {
-    "module": "commonjs",  // CommonJS for Node.js compatibility
-    "target": "es6",       // ES6 or lower for broader compatibility
-    "outDir": "./dist",    // Output directory for compiled JS files
-    "declaration": true,   // Generate type declaration files
-    "rootDir": "./src",    // Where your source files are located
-    "strict": true,        // Enable strict type checking
+    "module": "commonjs", // CommonJS for Node.js compatibility
+    "target": "es6", // ES6 or lower for broader compatibility
+    "outDir": "./dist", // Output directory for compiled JS files
+    "declaration": true, // Generate type declaration files
+    "rootDir": "./src", // Where your source files are located
+    "strict": true, // Enable strict type checking
     "esModuleInterop": true,
-    "skipLibCheck": true,  // Ensures that node modules' type checks are skipped
+    "skipLibCheck": true, // Ensures that node modules' type checks are skipped
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

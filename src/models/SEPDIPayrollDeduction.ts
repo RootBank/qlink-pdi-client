@@ -11,7 +11,7 @@ const logger = new Logger(config.logLevel);
 
 export class SEPDIPayrollDeduction {
   private connection: Connection;
-  private fields: Partial<SEPDIPayrollDeductionFields>;
+  public fields: Partial<SEPDIPayrollDeductionFields>;
 
   constructor(
     connection: Connection,
@@ -67,24 +67,5 @@ export class SEPDIPayrollDeduction {
       logger.error('Failed to save SEPDI Payroll Deduction', error);
       throw error;
     }
-  }
-
-  static async saveAll(
-    connection: Connection,
-    data: SEPDIPayrollDeductionFields[]
-  ): Promise<void> {
-    const bulkDeductions = data.map(
-      fields => new SEPDIPayrollDeduction(connection, fields)
-    );
-
-    const bulkRequestData = {
-      header: connection.connectionConfig,
-      data: bulkDeductions
-    };
-
-    logger.debug(
-      `Saving bulk SEPDI Payroll Deductions with request data: ${JSON.stringify(bulkRequestData)}`
-    );
-    await connection.sendBulkRequest(bulkRequestData);
   }
 }

@@ -20,7 +20,6 @@ class Config {
     this.qLinkUser = process.env.Q_LINK_USER || 'testUser';
     this.qLinkPassword = process.env.Q_LINK_PASSWORD || 'testPassword';
     this.institutionId = Number(process.env.Q_LINK_INSTITUTION_ID || 9999);
-    console.log(process.env.Q_LINK_LOG_LEVEL);
     this.logLevel = this.parseLogLevel(process.env.Q_LINK_LOG_LEVEL || 'ERROR');
   }
 

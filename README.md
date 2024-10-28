@@ -53,35 +53,6 @@ async function run() {
   );
 
   await sepdiDeduction.save();
-
-  // Bulk FEPDI Deductions
-  const bulkFepdiFields = [
-    {
-      employeeNumber: '12345',
-      amount: 500,
-      deductionType: '01',
-      startDate: '20250101',
-      surname: 'Doe',
-      referenceNumber: 'REF123'
-    },
-    {
-      employeeNumber: '67890',
-      amount: 300,
-      deductionType: '02',
-      startDate: '20250101',
-      surname: 'Smith',
-      referenceNumber: 'REF456'
-    }
-  ];
-  const fepdiDeductions = PayrollDeductionFactory.createAll(
-    connection,
-    DeductionType.FEPDI,
-    bulkFepdiFields
-  );
-  await connection.sendBulkRequest({
-    header: connection.connectionConfig,
-    data: fepdiDeductions
-  });
 }
 
 // Run the async function
@@ -143,13 +114,4 @@ Q_LINK_INSTITUTION_ID=9999
 Q_LINK_LOG_LEVEL=DEBUG
 ```
 
-Now you’re all set to integrate with the QLink API using `qlink-client-lib`!
-
-# TODO
-- Option 7 - Change Password Request:
-- Option 8 - UPDATE SEQUENCE NUMBER REQUEST
-- Option 9 - Maintenance Fuel Transactions (QFUL) Request:
-- Option 10 - Maintenance Transactions Request:
-- FEPDI parser
-- MEPDI full implementation
-- LEPDI full implementation
+Now you’re all set to integrate with the QLink API using `qlink-xml-client`!
