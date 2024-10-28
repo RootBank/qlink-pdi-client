@@ -65,7 +65,7 @@ run();
 ### Explanation
 
 - **Connection Configuration**: Initializes the connection using `Connection` with environment-based configuration and transaction details.
-- **Deduction Creation**: Creates both single and bulk deductions using `PayrollDeductionFactory` and sends them with `save` and `saveAll`.
+- **Deduction Creation**: Creates both single and bulk deductions using `PayrollDeductionFactory` and sends them with `save`.
 - **Error Handling**: Wrap calls in try/catch blocks to handle custom `QLinkError` or unexpected errors.
 
 ## Development Environment Setup
