@@ -5,60 +5,63 @@ import { PayrollIdentifier } from './enums/PayrollIdentifier';
 import { TransactionType } from './enums/TransactionType';
 import { CommunicationTest } from './models/CommunicationTest';
 import { Employee } from './models/Employee';
+import Config from './config';
 
 async function run() {
   // find an employee
-  const employeeConnection = new Connection({
-    transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
-    institution: 1234,
-    payrollIdentifier: PayrollIdentifier.ESKOM,
-    username: 'testUser',
-    password: 'testPassword'
-  });
-  const employee = new Employee(employeeConnection, {
-    employeeNumber: '12345',
-    idNumber: '54321'
-  });
-  const foundEmployee = await employee.find();
-  console.log(foundEmployee);
+  // const employeeConnection = new Connection({
+  //   transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
+  //   institution: 1234,
+  //   payrollIdentifier: PayrollIdentifier.PERSAL,
+  //   username: 'testUser',
+  //   password: 'testPassword'
+  // });
+  // const employee = new Employee(employeeConnection, {
+  //   employeeNumber: '12345',
+  //   idNumber: '54321'
+  // });
+  // const foundEmployee = await employee.find();
+  // console.log(foundEmployee);
 
   // Define connection configuration
+  const config = Config.getInstance();
+  console.log(config);
   const test_connection = new Connection({
     transaction_type: TransactionType.COMMUNICATION_TEST,
-    institution: 1234,
-    payrollIdentifier: PayrollIdentifier.ESKOM,
-    username: 'testUser',
-    password: 'testPassword'
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    username: config.qLinkUser,
+    password: config.qLinkPassword,
+    institution: config.institutionId,
   });
   const comms_test = new CommunicationTest(test_connection);
   comms_test.save();
 
   // Define connection configuration
-  const connection = new Connection({
-    transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
-    institution: 1234,
-    payrollIdentifier: PayrollIdentifier.ESKOM,
-    username: 'testUser',
-    password: 'testPassword',
-    effectiveSalaryMonth: '202501'
-  });
+  // const connection = new Connection({
+  //   transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
+  //   institution: 1234,
+  //   payrollIdentifier: PayrollIdentifier.PERSAL,
+  //   username: 'testUser',
+  //   password: 'testPassword',
+  //   effectiveSalaryMonth: '202501'
+  // });
 
-  // Single SEPDI Deduction using only compulsory fields
-  const sepdiFields = {
-    employeeNumber: '12345',
-    amount: 500,
-    deductionType: '01',
-    startDate: '20250101',
-    surname: 'Doe',
-    referenceNumber: 'REF123'
-  };
-  const sepdiDeduction = PayrollDeductionFactory.create(
-    connection,
-    DeductionType.SEPDI,
-    sepdiFields
-  );
+  // // Single SEPDI Deduction using only compulsory fields
+  // const sepdiFields = {
+  //   employeeNumber: '12345',
+  //   amount: 500,
+  //   deductionType: '01',
+  //   startDate: '20250101',
+  //   surname: 'Doe',
+  //   referenceNumber: 'REF123'
+  // };
+  // const sepdiDeduction = PayrollDeductionFactory.create(
+  //   connection,
+  //   DeductionType.SEPDI,
+  //   sepdiFields
+  // );
 
-  await sepdiDeduction.save();
+  // await sepdiDeduction.save();
 }
 
 // Run the async function
