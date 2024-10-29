@@ -5,7 +5,10 @@ import { PayrollIdentifier } from './enums/PayrollIdentifier';
 import { TransactionType } from './enums/TransactionType';
 import { CommunicationTest } from './models/CommunicationTest';
 import { Employee } from './models/Employee';
+import { SEPDIPayrollDeductionFields } from './types';
 import Config from './config';
+import { SEPDIFlag } from './enums/SEPDIFlag';
+import { TranType } from './enums/TranType';
 
 async function run() {
   // Define connection configuration
@@ -35,32 +38,34 @@ async function run() {
   const foundEmployee = await employee.find();
   console.log(foundEmployee);
 
-  // Define connection configuration
-  // const connection = new Connection({
-  //   transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
-  //   institution: 1234,
-  //   payrollIdentifier: PayrollIdentifier.PERSAL,
-  //   username: 'testUser',
-  //   password: 'testPassword',
-  //   effectiveSalaryMonth: '202501'
-  // });
+  // Single SEPDI Deduction using only compulsory fields
+  const transactionConnection = new Connection({
+    transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    username: config.qLinkUser,
+    password: config.qLinkPassword,
+    institution: config.institutionId,
+    effectiveSalaryMonth: '202512'
+  });
+  const sepdiFields: SEPDIPayrollDeductionFields = {
+    employeeNumber: foundEmployee.employeeNumber || '',
+    amount: 500,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
+    startDate: '20241201',
+    surname: foundEmployee.surname || 'QLINK SURNAME',
+    initials: 'Q S',
+    idNumber: `${foundEmployee.birthDate}0000000`,
+    referenceNumber: 'REF123',
+    flag: SEPDIFlag.PAPER_MANDATE,
+    transactionType: TranType.NEW_DEDUCTION
+  };
+  const sepdiDeduction = PayrollDeductionFactory.create(
+    transactionConnection,
+    DeductionType.SEPDI,
+    sepdiFields
+  );
 
-  // // Single SEPDI Deduction using only compulsory fields
-  // const sepdiFields = {
-  //   employeeNumber: '12345',
-  //   amount: 500,
-  //   deductionType: '01',
-  //   startDate: '20250101',
-  //   surname: 'Doe',
-  //   referenceNumber: 'REF123'
-  // };
-  // const sepdiDeduction = PayrollDeductionFactory.create(
-  //   connection,
-  //   DeductionType.SEPDI,
-  //   sepdiFields
-  // );
-
-  // await sepdiDeduction.save();
+  await sepdiDeduction.save();
 }
 
 // Run the async function

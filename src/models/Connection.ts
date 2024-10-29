@@ -80,7 +80,7 @@ export class Connection {
       const errCode = responseData.match(/<ERR_CODE>(\d+)<\/ERR_CODE>/)?.[1];
       const errMsg = responseData.match(/<ERR_MSG>(.*?)<\/ERR_MSG>/)?.[1];
 
-      logger.error(`QLink API error: ${errMsg}, Status Code: ${errCode}`);
+      logger.error(`QLink API error: ${errMsg}, Status Code: ${errCode}\n${responseData}`);
       throw new QLinkError(
         `QLink API error: ${errMsg || 'Unknown error'}`,
         Number(errCode)
