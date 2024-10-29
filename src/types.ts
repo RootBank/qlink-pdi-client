@@ -28,32 +28,34 @@ export type PayrollDeductionFields =
 
 // SEPDI-specific fields
 export interface SEPDIPayrollDeductionFields {
-  adminCost?: string;
-  amount: number;
-  appCode?: string;
-  arrInstallment?: string;
-  balance?: string;
-  corrRefNo?: string;
+  amount: number; // cents The monthly amount to be deducted.
+  balance?: string; // cents The total outstanding amount owed by the employee
+  corrRefNo?: string; // only for QFIX for the Correct Reference Number
   deductionType: string;
-  employeeNumber: string;
-  endDate?: string;
+  employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
+  endDate?: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
   errorCode?: string;
-  flag?: string;
-  idNumber?: string;
-  inflationUpdate?: string;
-  initials?: string;
-  interestPayable?: string;
+  flag?: string; // For Insurance Institutions -- see enums SEPDIFlag
+  idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
+  inflationUpdate?: string; // (Y/N). This field is used in a QUPD transaction and can have the value Y or N to indicate that the amount change was done for inflationary purposes or not. When omitted, it is deemed to be N.
+  initials?: string; // Initials of the employee (no spaces or special characters are allowed)
   intermediaryId?: string;
-  loanAmount?: string;
-  newDeductType?: string;
-  nrrNumber?: string;
-  oldEmployeeNumber?: string;
-  percentage?: string;
-  referenceNumber: string;
-  resNumber?: string;
-  startDate: string;
-  surname: string;
+  newDeductType?: string; // only for QFIX for the Correct Reference Number
+  referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
+  startDate: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
+  surname: string; // character set: [A-Z\s] only
   transactionType?: string;
+
+  // unlikely meeded for Insurnace and PERSAL.
+  adminCost?: string; // Not in use.
+  interestPayable?: string; // Not in use.
+  oldEmployeeNumber?: string; // Not in use.
+  loanAmount?: string;
+  percentage?: string; // This field is payroll specific and can be supplied instead of an amount where the deduction is based on a percentage of a value determined by the payroll.
+  resNumber?: string;
+  nrrNumber?: string;
+  appCode?: string; // Compulsory for the DOD payroll (payroll identifier = 2)
+  arrInstallment?: string; // Only applicable to Medical Institutions on PERSAL:
 }
 
 // FEPDI-specific fields

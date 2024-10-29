@@ -31,7 +31,7 @@ describe('serializeSEPDIPayrollDeductionToXML', () => {
       resNumber: 'RES001',
       startDate: '20220101',
       surname: 'NDLELA',
-      transactionType: TranType.QADD
+      transactionType: TranType.NEW_DEDUCTION
     };
 
     const expectedXML = `

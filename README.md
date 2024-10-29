@@ -49,7 +49,7 @@ async function run() {
   const sepdiFields = {
     employeeNumber: '12345',
     amount: 500,
-    deductionType: '01',
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
     startDate: '20250101',
     surname: 'Doe',
     referenceNumber: 'REF123'
