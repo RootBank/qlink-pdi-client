@@ -40,10 +40,12 @@ export class Employee {
     };
 
     logger.debug(
-      `Find employe with request data: ${JSON.stringify(requestData)}`
+      `Find employee with request data: ${JSON.stringify(requestData)}`
     );
     const responseXML = await this.connection.sendRequest(requestData);
-
+    logger.debug(
+      `Found employe with response data: ${JSON.stringify(responseXML)}`
+    );
     return parseEmployeeFromXML(this.connection, responseXML);
   }
 }

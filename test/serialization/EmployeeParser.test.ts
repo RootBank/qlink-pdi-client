@@ -30,7 +30,7 @@ describe('parseEmployeeFromXML', () => {
     const xmlData = `
       <QLINK>
         <DATA>
-          <EMPL_NO>12510814</EMPL_NO>
+          <EMPLNO>12510814</EMPLNO>
           <IDNO>5910140573081</IDNO>
           <REFERENCE_NO>REF123</REFERENCE_NO>
           <APP_CODE>01</APP_CODE>

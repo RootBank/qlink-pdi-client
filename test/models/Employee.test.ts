@@ -81,6 +81,9 @@ describe('Employee', () => {
 
     const result = await employee.find();
     expect(result).toBe(employee);
+    expect(result.fields.employeeNumber).toBe(employee.fields.employeeNumber)
+    console.log(result.fields)
+    expect(new Employee(mockConnection, result.fields).fields.employeeNumber).toBe(employee.fields.employeeNumber)
     expect(mockConnection.sendRequest).toHaveBeenCalled();
   });
 

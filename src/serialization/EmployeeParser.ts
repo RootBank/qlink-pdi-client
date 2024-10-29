@@ -29,7 +29,7 @@ export async function parseEmployeeFromXML(
 
     // Map parsed fields to EmployeeFields
     const employeeFields: Partial<EmployeeFields> = {
-      employeeNumber: parsedData.QLINK?.DATA?.EMPL_NO || '',
+      employeeNumber: parsedData.QLINK?.DATA?.EMPLNO || '',
       idNumber: parsedData.QLINK?.DATA?.IDNO || '',
       referenceNumber: parsedData.QLINK?.DATA?.REFERENCE_NO || '',
       appCode: parsedData.QLINK?.DATA?.APP_CODE || '',
