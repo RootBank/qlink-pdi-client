@@ -54,7 +54,7 @@ async function run() {
     startDate: '20241201',
     surname: foundEmployee.surname || 'QLINK SURNAME',
     initials: 'Q S',
-    idNumber: `${foundEmployee.birthDate}0000000`,
+    idNumber: `${foundEmployee.birthDate?.slice(-6)}0000000`,
     referenceNumber: 'REF123',
     flag: SEPDIFlag.PAPER_MANDATE,
     transactionType: TranType.NEW_DEDUCTION
