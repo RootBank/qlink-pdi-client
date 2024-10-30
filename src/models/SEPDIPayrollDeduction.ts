@@ -81,7 +81,7 @@ export class SEPDIPayrollDeduction {
         }
         if (this.fields.transactionType === TranType.DELETION) {
           if (!this.fields.endDate) {
-            throw new RangeError('END_DATE is required.');
+            throw new QLinkError('END_DATE is required.');
           }
           if (this.fields.endDate) {
             const endDate = new Date(`${this.fields.endDate.slice(0, 4)}-${this.fields.endDate.slice(4, 6)}-${this.fields.endDate.slice(6, 8)}`);
