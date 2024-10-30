@@ -79,16 +79,21 @@ export class SEPDIPayrollDeduction {
         if (startDate.getDate() !== 1) {
           throw new QLinkError('START_DATE must be the first day of the month.');
         }
-        if (this.fields.transactionType === TranType.DELETION && this.fields.endDate) {
-          const endDate = new Date(`${this.fields.endDate.slice(0, 4)}-${this.fields.endDate.slice(4, 6)}-${this.fields.endDate.slice(6, 8)}`);
-
-          if (isNaN(endDate.getTime())) {
-            throw new RangeError('Invalid END_DATE format.');
+        if (this.fields.transactionType === TranType.DELETION) {
+          if (!this.fields.endDate) {
+            throw new RangeError('END_DATE is required.');
           }
+          if (this.fields.endDate) {
+            const endDate = new Date(`${this.fields.endDate.slice(0, 4)}-${this.fields.endDate.slice(4, 6)}-${this.fields.endDate.slice(6, 8)}`);
 
-          const lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
-          if (endDate.getDate() !== lastDayOfMonth) {
-            throw new QLinkError('END_DATE must be the last day of the month for DELETION transactions.');
+            if (isNaN(endDate.getTime())) {
+              throw new RangeError('Invalid END_DATE format.');
+            }
+
+            const lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
+            if (endDate.getDate() !== lastDayOfMonth) {
+              throw new QLinkError('END_DATE must be the last day of the month for DELETION transactions.');
+            }
           }
         }
       } catch (error) {
