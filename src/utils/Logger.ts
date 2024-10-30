@@ -12,10 +12,28 @@ export class Logger {
     this.logLevel = level;
   }
 
-  private maskSensitiveInfo(message: string): string {
-    return message
-      .replace(/<USER>.*?<\/USER>/, '<USER>*******</USER>')
-      .replace(/<PSWD>.*?<\/PSWD>/, '<PSWD>*******</PSWD>');
+  // Helper to mask sensitive information in both JSON and XML
+  private maskSensitiveInfo(data: string | object): string {
+    let dataString = typeof data === 'string' ? data : JSON.stringify(data);
+
+    // XML masking
+    dataString = dataString
+      .replace(/<USER>.*?<\/USER>/gi, '<USER>*******</USER>')
+      .replace(/<PSWD>.*?<\/PSWD>/gi, '<PSWD>*******</PSWD>')
+      .replace(/<IDNO>.*?<\/IDNO>/gi, '<IDNO>*******</IDNO>')
+      .replace(/<SURNAME>.*?<\/SURNAME>/gi, '<SURNAME>*******</SURNAME>')
+      .replace(/<EMPL_NO>.*?<\/EMPL_NO>/gi, '<EMPL_NO>*******</EMPL_NO>')
+      .replace(/<EMPLNO>.*?<\/EMPLNO>/gi, '<EMPLNO>*******</EMPLNO>');
+
+    // JSON masking
+    dataString = dataString
+      .replace(/"username":\s*".*?"/gi, '"username": "*******"')
+      .replace(/"password":\s*".*?"/gi, '"password": "*******"')
+      .replace(/"idNumber":\s*".*?"/gi, '"idNumber": "*******"')
+      .replace(/"surname":\s*".*?"/gi, '"surname": "*******"')
+      .replace(/"employeeNumber":\s*".*?"/gi, '"employeeNumber": "*******"');
+
+    return dataString;
   }
 
   async log(
@@ -24,23 +42,24 @@ export class Logger {
     details?: any
   ): Promise<void> {
     if (messageLevel >= this.logLevel) {
-      let logMessage = `[${LogLevel[messageLevel]}]: ${this.maskSensitiveInfo(message)}`;
-      if (details) {
-        const maskedDetails = typeof details === 'string'
-          ? this.maskSensitiveInfo(details)
-          : JSON.stringify(details);
-        logMessage += ` | Details: ${maskedDetails}`;
-      }
+      // Mask sensitive info in message and details
+      const maskedMessage = this.maskSensitiveInfo(message);
+      const maskedDetails = details ? this.maskSensitiveInfo(details) : '';
+
+      // Log the message with masked information
+      const logMessage = `[${LogLevel[messageLevel]}]: ${maskedMessage}` +
+        (maskedDetails ? ` | Details: ${maskedDetails}` : '');
+
       console.log(logMessage);
     }
   }
 
-  debug(message: string): void {
-    this.log(LogLevel.DEBUG, message);
+  debug(message: string, details?: any): void {
+    this.log(LogLevel.DEBUG, message, details);
   }
 
-  info(message: string): void {
-    this.log(LogLevel.INFO, message);
+  info(message: string, details?: any): void {
+    this.log(LogLevel.INFO, message, details);
   }
 
   error(message: string, errorDetails?: any): void {
