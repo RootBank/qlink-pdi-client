@@ -5,6 +5,7 @@ import { serializeHeaderToXML } from '../serialization/HeaderSerializer';
 import { Logger } from '../utils/Logger';
 import Config from '../config';
 import { TransactionType } from '../enums/TransactionType';
+import { QLinkStatusCode } from '../enums/QlinkErrorCode';
 
 const config = Config.getInstance();
 const logger = new Logger(config.logLevel);
@@ -76,16 +77,21 @@ export class Connection {
   }
 
   private handleQLinkResponseErrors(responseData: string): void {
-    if (responseData.includes('<ERR_CODE>')) {
-      const errCode = responseData.match(/<ERR_CODE>(\d+)<\/ERR_CODE>/)?.[1];
-      const errMsg = responseData.match(/<ERR_MSG>(.*?)<\/ERR_MSG>/)?.[1];
+    const errCodeMatch = responseData.match(/<ERR_CODE>(\d+)<\/ERR_CODE>/);
+    const errMsgMatch = responseData.match(/<ERR_MSG>(.*?)<\/ERR_MSG>/);
 
-      logger.error(`QLink API error: ${errMsg}, Status Code: ${errCode}\n${responseData}`);
-      throw new QLinkError(
-        `QLink API error: ${errMsg || 'Unknown error'}`,
-        Number(errCode)
-      );
+    const errCodeString = errCodeMatch?.[1];
+    const errCode = Number(errCodeString);
+
+    if (isNaN(errCode) || errCode === QLinkStatusCode.Ok) {
+      logger.info(`QLink API response successful: Status Code: ${errCodeString || '0'}`);
+      return;
     }
+
+    const errMsg = errMsgMatch?.[1] || QLinkStatusCode[errCode as QLinkStatusCode] || 'Unknown error';
+
+    logger.error(`QLink API error: ${errMsg}, Status Code: ${errCodeString}\n${responseData}`);
+    throw new QLinkError(`QLink API error: ${errMsg}`, errCode);
   }
 
   private handleExceptions(error: any): void {
