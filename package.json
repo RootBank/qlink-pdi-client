@@ -1,6 +1,6 @@
 {
   "name": "qlink-pdi-client",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A Node.js library to interact with the QLINK Standard Electronic Payroll Deduction Interface API (version 7.x.x). This is the initial release tailored for QLINK's payroll deduction services.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
