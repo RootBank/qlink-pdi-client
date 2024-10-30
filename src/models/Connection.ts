@@ -5,7 +5,7 @@ import { serializeHeaderToXML } from '../serialization/HeaderSerializer';
 import { Logger } from '../utils/Logger';
 import Config from '../config';
 import { TransactionType } from '../enums/TransactionType';
-import { QLinkStatusCode } from '../enums/QlinkErrorCode';
+import { QLinkStatusCode } from '../enums/QLinkStatusCode';
 
 const config = Config.getInstance();
 const logger = new Logger(config.logLevel);
