@@ -12,6 +12,12 @@ export class Logger {
     this.logLevel = level;
   }
 
+  private maskSensitiveInfo(message: string): string {
+    return message
+      .replace(/<USER>.*?<\/USER>/, '<USER>*******</USER>')
+      .replace(/<PSWD>.*?<\/PSWD>/, '<PSWD>*******</PSWD>');
+  }
+
   async log(
     messageLevel: LogLevel,
     message: string,
@@ -20,7 +26,10 @@ export class Logger {
     if (messageLevel >= this.logLevel) {
       let logMessage = `[${LogLevel[messageLevel]}]: ${message}`;
       if (details) {
-        logMessage += ` | Details: ${typeof details === 'object' ? JSON.stringify(details) : details}`;
+        const maskedDetails = typeof details === 'string'
+          ? this.maskSensitiveInfo(details)
+          : JSON.stringify(details);
+        logMessage += ` | Details: ${maskedDetails}`;
       }
       console.log(logMessage);
     }
