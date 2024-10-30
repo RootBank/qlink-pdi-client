@@ -13,8 +13,8 @@ fi
 sudo passwd -l ec2-user
 
 # Variables
-REPO_URL="https://github.com/RootBank/qlink-xml-client.git"
-PROJECT_DIR="/home/ec2-user/qlink-xml-client"
+REPO_URL="https://github.com/RootBank/qlink-pdi-client.git"
+PROJECT_DIR="/home/ec2-user/qlink-pdi-client"
 NVM_DIR="/home/ec2-user/.nvm"
 
 # Step 1: Update system packages

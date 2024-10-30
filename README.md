@@ -1,13 +1,13 @@
 ![Node LTS](https://img.shields.io/badge/node-%3E%3D%2020.0.0-brightgreen)
-![License](https://img.shields.io/github/license/RootBank/qlink-xml-client)
+![License](https://img.shields.io/github/license/RootBank/qlink-pdi-client)
 
-# QLink Client Library
+# QLink Payroll Deduction Interface (PDI) Client Library
 
 This library provides a client for sending requests to the QLink API, specifically supporting payroll deductions (SEPDI, FEPDI) and error handling.
 
 ## Prerequisites
 
-To use the `qlink-xml-client`, ensure you have the following environment variables configured in a `.env` file:
+To use the `qlink-pdi-client`, ensure you have the following environment variables configured in a `.env` file:
 
 ```bash
 Q_LINK_USER=yourUsername
@@ -25,37 +25,69 @@ Note: All SEPDI and FEPDI transactions types (TRX) must be set to Q_LINK_TRANSAC
 ### Step-by-Step Example
 
 ```typescript
-import { Connection } from './services/Connection';
+import { Connection } from './models/Connection';
 import { DeductionType } from './enums/DeductionType';
 import { PayrollDeductionFactory } from './factories/PayrollDeductionFactory';
 import { PayrollIdentifier } from './enums/PayrollIdentifier';
 import { TransactionType } from './enums/TransactionType';
+import { CommunicationTest } from './models/CommunicationTest';
+import { Employee } from './models/Employee';
+import { SEPDIPayrollDeductionFields } from './types';
+import Config from './config';
+import { SEPDIFlag } from './enums/SEPDIFlag';
+import { TranType } from './enums/TranType';
 
 async function run() {
   // Define connection configuration
   const config = Config.getInstance();
-
-  const connection = new Connection({
+  console.log(config);
+  const test_connection = new Connection({
     transaction_type: TransactionType.COMMUNICATION_TEST,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     username: config.qLinkUser,
     password: config.qLinkPassword,
     institution: config.institutionId,
   });
-  const comms_test = new CommunicationTest(connection);
+  const comms_test = new CommunicationTest(test_connection);
   comms_test.save();
 
-  // Single SEPDI Deduction
-  const sepdiFields = {
-    employeeNumber: '12345',
+  // find an employee
+  const employeeConnection = new Connection({
+    transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    username: config.qLinkUser,
+    password: config.qLinkPassword,
+    institution: config.institutionId,
+  });
+  const employee = new Employee(employeeConnection, {
+    employeeNumber: '82714673',
+  });
+  const foundEmployee = await employee.find();
+  console.log(foundEmployee);
+
+  // Single SEPDI Deduction using only compulsory fields
+  const transactionConnection = new Connection({
+    transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    username: config.qLinkUser,
+    password: config.qLinkPassword,
+    institution: config.institutionId,
+    effectiveSalaryMonth: '202512'
+  });
+  const sepdiFields: SEPDIPayrollDeductionFields = {
+    employeeNumber: foundEmployee.employeeNumber || '',
     amount: 500,
     deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
-    startDate: '20250101',
-    surname: 'Doe',
-    referenceNumber: 'REF123'
+    startDate: '20241201',
+    surname: foundEmployee.surname || 'QLINK SURNAME',
+    initials: 'Q S',
+    idNumber: `${foundEmployee.birthDate?.slice(-6)}0000000`,
+    referenceNumber: 'REF123',
+    flag: SEPDIFlag.PAPER_MANDATE,
+    transactionType: TranType.NEW_DEDUCTION
   };
   const sepdiDeduction = PayrollDeductionFactory.create(
-    connection,
+    transactionConnection,
     DeductionType.SEPDI,
     sepdiFields
   );
@@ -82,7 +114,7 @@ run();
 
 2. Set up the development environment:
    ```bash
-   curl -o setup-remote-env.sh https://raw.githubusercontent.com/RootBank/qlink-xml-client/refs/heads/main/setup-remote-env.sh
+   curl -o setup-remote-env.sh https://raw.githubusercontent.com/RootBank/qlink-pdi-client/refs/heads/main/setup-remote-env.sh
    chmod +x setup-remote-env.sh
    sudo ./setup-remote-env.sh
    ```
@@ -122,4 +154,4 @@ Q_LINK_INSTITUTION_ID=9999
 Q_LINK_LOG_LEVEL=DEBUG
 ```
 
-Now you’re all set to integrate with the QLink API using `qlink-xml-client`!
+Now you’re all set to integrate with the QLink API using `qlink-pdi-client`!
