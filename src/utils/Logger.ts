@@ -24,7 +24,7 @@ export class Logger {
     details?: any
   ): Promise<void> {
     if (messageLevel >= this.logLevel) {
-      let logMessage = `[${LogLevel[messageLevel]}]: ${message}`;
+      let logMessage = `[${LogLevel[messageLevel]}]: ${this.maskSensitiveInfo(message)}`;
       if (details) {
         const maskedDetails = typeof details === 'string'
           ? this.maskSensitiveInfo(details)
