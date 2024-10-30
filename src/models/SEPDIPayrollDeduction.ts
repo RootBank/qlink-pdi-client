@@ -60,22 +60,46 @@ export class SEPDIPayrollDeduction {
         }
         throw new QLinkError('START_DATE is required on PERSAL payroll identifier.');
       }
-      const startDate = new Date(this.fields.startDate);
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-
-      if (startDate <= today) {
-        throw new QLinkError('START_DATE must be in the future.');
+      if (this.fields.startDate.length != 8) {
+        throw new QLinkError('START_DATE is must in format CCYYMMDD.');
       }
-      if (startDate.getDate() !== 1) {
-        throw new QLinkError('START_DATE must be the first day of the month.');
-      }
-      if (this.fields.transactionType === TranType.DELETION && this.fields.endDate) {
-        const endDate = new Date(this.fields.endDate);
+      try {
+        const startDate = new Date(`${this.fields.startDate.slice(0, 4)}-${this.fields.startDate.slice(4, 6)}-${this.fields.startDate.slice(6, 8)}`);
 
-        const lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
-        if (endDate.getDate() !== lastDayOfMonth) {
-          throw new QLinkError('END_DATE must be the last day of the month for DELETION transactions.');
+        if (isNaN(startDate.getTime())) {
+          throw new RangeError('Invalid START_DATE format.');
+        }
+
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        if (startDate <= today) {
+          throw new QLinkError('START_DATE must be in the future.');
+        }
+        if (startDate.getDate() !== 1) {
+          throw new QLinkError('START_DATE must be the first day of the month.');
+        }
+        if (this.fields.transactionType === TranType.DELETION && this.fields.endDate) {
+          const endDate = new Date(`${this.fields.endDate.slice(0, 4)}-${this.fields.endDate.slice(4, 6)}-${this.fields.endDate.slice(6, 8)}`);
+
+          if (isNaN(endDate.getTime())) {
+            throw new RangeError('Invalid END_DATE format.');
+          }
+
+          const lastDayOfMonth = new Date(endDate.getFullYear(), endDate.getMonth() + 1, 0).getDate();
+          if (endDate.getDate() !== lastDayOfMonth) {
+            throw new QLinkError('END_DATE must be the last day of the month for DELETION transactions.');
+          }
+        }
+      } catch (error) {
+        if (error instanceof RangeError) {
+          throw new QLinkError(`Date parsing error: ${error.message}`);
+        } else if (error instanceof QLinkError) {
+          console.error(`${error.message}`);
+          throw error;
+        } else {
+          console.error('An unexpected error occurred during validation', error);
+          throw error;
         }
       }
     }

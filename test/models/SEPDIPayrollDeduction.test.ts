@@ -61,7 +61,7 @@ describe('SEPDIPayrollDeduction', () => {
       deductionType: '0010',
       surname: 'Doe',
       referenceNumber: 'REF123',
-      startDate: getFutureEffectiveSalaryMonth()
+      startDate: `${getFutureEffectiveSalaryMonth()}01`
     };
     deduction = new SEPDIPayrollDeduction(connection, fields);
     jest.clearAllMocks();
