@@ -113,7 +113,7 @@ export class Connection {
     const xmlData = this.wrapInQLink(headerXML, dataXML);
 
     logger.info('Sending QLink request');
-    logger.debug(`Request XML: ${xmlData}`);
+    logger.debug(`Request XML:\n${xmlData}`);
 
     try {
       const response = await axiosInstance.post('', xmlData);

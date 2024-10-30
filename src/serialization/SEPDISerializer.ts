@@ -1,6 +1,7 @@
 import { TranType } from '../enums/TranType';
 import { SEPDIPayrollDeductionFields } from '../types';
 import { js2xml } from 'xml-js';
+import { formatCentsToCharString } from '../utils/stringHelpers'
 
 // SEPDI = General deductions, e.g. Insurance, Unions.
 export function serializeSEPDIPayrollDeductionToXML(
@@ -10,10 +11,10 @@ export function serializeSEPDIPayrollDeductionToXML(
   const sepdiData = {
     DATA: {
       ADMIN_COST: fields.adminCost || '',
-      AMOUNT: fields.amount.toString(),
+      AMOUNT: formatCentsToCharString(fields.amount),
       APP_CODE: fields.appCode || '',
       ARR_INSTALLMENT: fields.arrInstallment || '',
-      BALANCE: fields.balance || '',
+      BALANCE: formatCentsToCharString(fields.balance),
       CORR_REF_NO: fields.corrRefNo || '',
       DEDUCT_TYPE: fields.deductionType,
       EMPL_NO: fields.employeeNumber,
@@ -25,11 +26,11 @@ export function serializeSEPDIPayrollDeductionToXML(
       INITIALS: fields.initials || '',
       INT_PAYABLE: fields.interestPayable || '',
       INTERMEDIARY_ID: fields.intermediaryId || '',
-      LOAN_AMNT: fields.loanAmount || '',
+      LOAN_AMNT: formatCentsToCharString(fields.loanAmount),
       NEW_DEDUCT_TYPE: fields.newDeductType || '',
       NRR_NUBMER: fields.nrrNumber || '',
       OLD_EMPL_NO: fields.oldEmployeeNumber || '',
-      PERCENTAGE: fields.percentage || '',
+      PERCENTAGE: formatCentsToCharString(fields.percentage, 5),
       REFERENCE_NO: fields.referenceNumber,
       RES_NUMBER: fields.resNumber || '',
       START_DATE: fields.startDate,

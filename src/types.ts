@@ -56,6 +56,8 @@ export interface SEPDIPayrollDeductionFields {
   nrrNumber?: string;
   appCode?: string; // Compulsory for the DOD payroll (payroll identifier = 2)
   arrInstallment?: string; // Only applicable to Medical Institutions on PERSAL:
+  web_function_log_id?: string;
+  last_web_function_log_id?: string;
 }
 
 // FEPDI-specific fields

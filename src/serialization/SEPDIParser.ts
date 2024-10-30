@@ -47,7 +47,9 @@ export async function parseSEPDIPayrollDeductionFromXML(
       resNumber: parsedData.QLINK?.DATA?.RES_NUMBER || '',
       startDate: parsedData.QLINK?.DATA?.START_DATE || '',
       surname: parsedData.QLINK?.DATA?.SURNAME || '',
-      transactionType: parsedData.QLINK?.DATA?.TRANTYPE || ''
+      transactionType: parsedData.QLINK?.DATA?.TRANTYPE || '',
+      web_function_log_id: parsedData.QLINK?.DATA?.WEB_FUNCTION_LOG_ID || '',
+      last_web_function_log_id: parsedData.QLINK?.DATA?.LAST_WEB_FUNCTION_LOG_ID || '',
     };
 
     // Instantiate and return an SEPDIPayrollDeduction with the populated fields

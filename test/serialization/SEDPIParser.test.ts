@@ -91,7 +91,9 @@ describe('parseSEPDIPayrollDeductionFromXML', () => {
       resNumber: '',
       startDate: '20200701',
       surname: 'NDLELA',
-      transactionType: 'QADD'
+      transactionType: 'QADD',
+      last_web_function_log_id: '',
+      web_function_log_id: '',
     });
   });
 });

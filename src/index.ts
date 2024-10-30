@@ -33,7 +33,7 @@ async function run() {
     institution: config.institutionId,
   });
   const employee = new Employee(employeeConnection, {
-    employeeNumber: '12510814',
+    employeeNumber: '82714673',
   });
   const foundEmployee = await employee.find();
   console.log(foundEmployee);

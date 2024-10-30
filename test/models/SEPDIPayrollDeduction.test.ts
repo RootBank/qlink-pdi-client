@@ -4,11 +4,36 @@ import { Connection } from '../../src/models/Connection';
 import { QLinkError } from '../../src/errors';
 import { parseSEPDIPayrollDeductionFromXML } from '../../src/serialization/SEPDIParser';
 import { serializeSEPDIPayrollDeductionToXML } from '../../src/serialization/SEPDISerializer';
-import { SEPDIPayrollDeductionFields } from '../../src/types';
+import { SEPDIPayrollDeductionFields, ConnectionFields } from '../../src/types';
 import { Logger } from '../../src/utils/Logger';
 import { getFutureEffectiveSalaryMonth } from '../testHelpers';
 import { PayrollIdentifier } from '../../src/enums/PayrollIdentifier';
 import { TransactionType } from '../../src/enums/TransactionType';
+
+class MockConnection extends Connection {
+  private mockConfig: Partial<ConnectionFields>;
+
+  constructor(mockFields: Partial<ConnectionFields>) {
+    // Call the original Connection constructor with default fields
+    super({
+      transaction_type: mockFields.transaction_type || TransactionType.Q_LINK_TRANSACTIONS,
+      payrollIdentifier: mockFields.payrollIdentifier || PayrollIdentifier.PERSAL,
+      username: 'testUser',
+      password: 'testPassword',
+      institution: 1234,
+      ...mockFields
+    });
+    this.mockConfig = mockFields;
+  }
+
+  // Override the connectionConfig getter
+  public get connectionConfig(): ConnectionFields {
+    return {
+      ...super.connectionConfig,
+      ...this.mockConfig
+    };
+  }
+}
 
 jest.mock('../../src/models/Connection');
 jest.mock('../../src/serialization/SEPDIParser');
@@ -21,7 +46,7 @@ describe('SEPDIPayrollDeduction', () => {
   let deduction: SEPDIPayrollDeduction;
 
   beforeEach(() => {
-    connection = new Connection({
+    connection = new MockConnection({
       transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
       institution: 1,
       payrollIdentifier: PayrollIdentifier.PERSAL,
@@ -31,10 +56,12 @@ describe('SEPDIPayrollDeduction', () => {
     });
     fields = {
       employeeNumber: '12345',
+      idNumber: '0001010000000',
       amount: 500,
       deductionType: '0010',
       surname: 'Doe',
-      referenceNumber: 'REF123'
+      referenceNumber: 'REF123',
+      startDate: getFutureEffectiveSalaryMonth()
     };
     deduction = new SEPDIPayrollDeduction(connection, fields);
     jest.clearAllMocks();

@@ -37,10 +37,10 @@ describe('serializeSEPDIPayrollDeductionToXML', () => {
     const expectedXML = `
       <DATA>
           <ADMIN_COST>50</ADMIN_COST>
-          <AMOUNT>1000</AMOUNT>
+          <AMOUNT>0000001000</AMOUNT>
           <APP_CODE>01</APP_CODE>
           <ARR_INSTALLMENT>20</ARR_INSTALLMENT>
-          <BALANCE>500</BALANCE>
+          <BALANCE>0000000500</BALANCE>
           <CORR_REF_NO>CORR001</CORR_REF_NO>
           <DEDUCT_TYPE>0010</DEDUCT_TYPE>
           <EMPL_NO>60175753</EMPL_NO>
@@ -52,11 +52,11 @@ describe('serializeSEPDIPayrollDeductionToXML', () => {
           <INITIALS>DG</INITIALS>
           <INT_PAYABLE>5</INT_PAYABLE>
           <INTERMEDIARY_ID>INT001</INTERMEDIARY_ID>
-          <LOAN_AMNT>10000</LOAN_AMNT>
+          <LOAN_AMNT>0000010000</LOAN_AMNT>
           <NEW_DEDUCT_TYPE>0020</NEW_DEDUCT_TYPE>
           <NRR_NUBMER>NRR123</NRR_NUBMER>
           <OLD_EMPL_NO>60175752</OLD_EMPL_NO>
-          <PERCENTAGE>15</PERCENTAGE>
+          <PERCENTAGE>00015</PERCENTAGE>
           <REFERENCE_NO>185109477</REFERENCE_NO>
           <RES_NUMBER>RES001</RES_NUMBER>
           <START_DATE>20220101</START_DATE>
@@ -86,10 +86,10 @@ describe('serializeSEPDIPayrollDeductionToXML', () => {
     const expectedXML = `
       <DATA>
           <ADMIN_COST/>
-          <AMOUNT>500</AMOUNT>
+          <AMOUNT>0000000500</AMOUNT>
           <APP_CODE/>
           <ARR_INSTALLMENT/>
-          <BALANCE/>
+          <BALANCE>0000000000</BALANCE>
           <CORR_REF_NO/>
           <DEDUCT_TYPE>0010</DEDUCT_TYPE>
           <EMPL_NO>60175753</EMPL_NO>
@@ -101,11 +101,11 @@ describe('serializeSEPDIPayrollDeductionToXML', () => {
           <INITIALS/>
           <INT_PAYABLE/>
           <INTERMEDIARY_ID/>
-          <LOAN_AMNT/>
+          <LOAN_AMNT>0000000000</LOAN_AMNT>
           <NEW_DEDUCT_TYPE/>
           <NRR_NUBMER/>
           <OLD_EMPL_NO/>
-          <PERCENTAGE/>
+          <PERCENTAGE>00000</PERCENTAGE>
           <REFERENCE_NO>185109477</REFERENCE_NO>
           <RES_NUMBER/>
           <START_DATE>20220101</START_DATE>
