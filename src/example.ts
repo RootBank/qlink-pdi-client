@@ -27,12 +27,13 @@ const main = async () => {
     deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
     employeeNumber: "84177942",
     payrollIdentifier: PayrollIdentifier.PERSAL,
-    referenceNumber: "my lucky random number",
-    startDate: formatDate(new Date(2024, 12, 1)).ccyyMM01,
-    surname: "SURNAME",
-    effectiveSalaryMonth: formatDate(new Date(2024, 10, 1)).ccyyMM,
+    referenceNumber: "ASQ6543FHAHDCS1",
+    startDate: formatDate(new Date(2024, 11, 1)).ccyyMM01,
+    surname: employee.surname ? employee.surname : "SURNAME",
+    effectiveSalaryMonth: formatDate(new Date(2024, 11, 1)).ccyyMM,
     flag: SEPDIFlag.PAPER_MANDATE,
     idNumber: IdFromBirthDate(employee.birthDate as string),
+    initials: employee.empName ? employee.empName.split(" ")[0]?.slice(0, 2) : "A A"
   } as SEPDIPayrollDeductionFields
   await qlink.createInsurancePayrollDeduction(deductionFields);
 };
