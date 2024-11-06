@@ -2,9 +2,18 @@ import { DeductionType } from "./enums/deduction-type";
 import { PayrollIdentifier } from "./enums/payroll-identifier";
 import { SEPDIFlag } from "./enums/sepdi-flag";
 import { QLinkClient } from "./models/qlink-client";
+import { Configuration } from "./types";
 import { formatDate } from "./utils/date-helpers";
+import 'dotenv/config'
 
-const qlink = new QLinkClient({ institution: 123, password: "pswd", username: "usr" })
+const qlink = new QLinkClient(
+  {
+    institution: Number(process.env.QLINK_INSTITUTION_ID),
+    password: process.env.QLINK_PASSWORD,
+    username: process.env.QLINK_USERNAME,
+    baseUrl: process.env.QLINK_URL,
+  } as Configuration
+)
 
 qlink.testConnection();
 

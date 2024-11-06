@@ -10,7 +10,7 @@ export class Logger {
   private static instance: Logger;
 
   private constructor(level: LogLevel = LogLevel.ERROR) {
-    this.logLevel = this.parseLogLevel(process.env.Q_LINK_LOG_LEVEL || 'ERROR');
+    this.logLevel = this.parseLogLevel(process.env.QLINK_LOG_LEVEL || 'ERROR');
   }
 
   private parseLogLevel(level: string): LogLevel {
