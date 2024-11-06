@@ -8,7 +8,7 @@ import { EmployeeFields } from '../types';
 
 /**
  * Parses XML data into an Employee instance.
- * @param connection - The QlinkClient instance for making requests.
+ * @param connection - The QLinkClient instance for making requests.
  * @param xmlData - The XML string response from QLink API.
  * @returns {Promise<EmployeeFields>} - A promise that resolves to an Employee instance.
  */

@@ -1,5 +1,5 @@
 import { EmployeeQueryParameter } from '../types';
-import { QlinkClient } from './qlink-client';
+import { QLinkClient } from './qlink-client';
 import { QLinkError } from '../errors';
 import { Logger } from '../utils/logger-util';
 import { serializeEmployeeQueryParametersToXML } from '../serialization/employee-serializer';
@@ -67,7 +67,7 @@ export class Employee extends QLinkBase implements EmployeeQueryParameter {
     return serializeEmployeeQueryParametersToXML({ employeeNumber: this.employeeNumber, payrollIdentifier: this.payrollIdentifier, idNumber: this.idNumber, referenceNumber: this.referenceNumber });
   }
 
-  static async find(client: QlinkClient, queryParams: EmployeeQueryParameter): Promise<Employee> {
+  static async find(client: QLinkClient, queryParams: EmployeeQueryParameter): Promise<Employee> {
     const header = new Header(client.connectionConfig(), { transactionType: TransactionType.EMPLOYEE_ENQUIRIES, payrollIdentifier: queryParams.payrollIdentifier });
     const data = new Employee(queryParams);
     const requestData = new QLinkRequest(header, data);

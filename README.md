@@ -1,7 +1,7 @@
 ![Node LTS](https://img.shields.io/badge/node-%3E%3D%2020.0.0-brightgreen)
 ![License](https://img.shields.io/github/license/RootBank/qlink-pdi-client)
 
-# QLink Payroll Deduction Interface (PDI) QlinkClient Library
+# QLink Payroll Deduction Interface (PDI) QLinkClient Library
 
 This library provides a client for sending requests to the QLink API, specifically supporting payroll deductions (SEPDI, FEPDI) and error handling.
 
@@ -25,7 +25,7 @@ Note: All SEPDI and FEPDI transactions types (TRX) must be set to Q_LINK_TRANSAC
 ### Step-by-Step Example
 
 ```typescript
-import { QlinkClient } from './models/qlink-client';
+import { QLinkClient } from './models/qlink-client';
 import { DeductionType } from './enums/DeductionType';
 import { PayrollDeductionFactory } from './factories/PayrollDeductionFactory';
 import { PayrollIdentifier } from './enums/PayrollIdentifier';
@@ -41,7 +41,7 @@ async function run() {
   // Define connection configuration
   const config = Config.getInstance();
   console.log(config);
-  const test_connection = new QlinkClient({
+  const test_connection = new QLinkClient({
     transaction_type: TransactionType.COMMUNICATION_TEST,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     username: config.qLinkUser,
@@ -52,21 +52,21 @@ async function run() {
   comms_test.save();
 
   // find an employee
-  const employeeQlinkClient = new QlinkClient({
+  const employeeQLinkClient = new QLinkClient({
     transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     username: config.qLinkUser,
     password: config.qLinkPassword,
     institution: config.institutionId,
   });
-  const employee = new Employee(employeeQlinkClient, {
+  const employee = new Employee(employeeQLinkClient, {
     employeeNumber: '82714673',
   });
   const foundEmployee = await employee.find();
   console.log(foundEmployee);
 
   // Single SEPDI Deduction using only compulsory fields
-  const transactionQlinkClient = new QlinkClient({
+  const transactionQLinkClient = new QLinkClient({
     transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     username: config.qLinkUser,
@@ -87,7 +87,7 @@ async function run() {
     transactionType: TranType.NEW_DEDUCTION
   };
   const sepdiDeduction = PayrollDeductionFactory.create(
-    transactionQlinkClient,
+    transactionQLinkClient,
     DeductionType.SEPDI,
     sepdiFields
   );
@@ -101,7 +101,7 @@ run();
 
 ### Explanation
 
-- **QlinkClient Configuration**: Initializes the connection using `QlinkClient` with environment-based configuration and transaction details.
+- **QLinkClient Configuration**: Initializes the connection using `QLinkClient` with environment-based configuration and transaction details.
 - **Deduction Creation**: Creates both single and bulk deductions using `PayrollDeductionFactory` and sends them with `save`.
 - **Error Handling**: Wrap calls in try/catch blocks to handle custom `QLinkError` or unexpected errors.
 

@@ -1,7 +1,7 @@
 import { parseSEPDIPayrollDeductionFromXML } from '../serialization/sepdi-parser';
 import { serializeSEPDIPayrollDeductionToXML } from '../serialization/sepdi-serializer';
 import { SEPDIPayrollDeductionFields } from '../types';
-import { QlinkClient } from './qlink-client';
+import { QLinkClient } from './qlink-client';
 import { QLinkError } from '../errors';
 import { Logger } from '../utils/logger-util';
 import { PayrollIdentifier } from '../enums/payroll-identifier';
@@ -21,7 +21,7 @@ const logger = Logger.getInstance();
  * payroll deduction details to the Q LINK system.
  */
 export class SEPDIPayrollDeduction extends QLinkBase implements SEPDIPayrollDeductionFields {
-  public client: QlinkClient;
+  public client: QLinkClient;
   public readonly transactionType: TransactionType = TransactionType.Q_LINK_TRANSACTIONS;
 
   /**
@@ -145,7 +145,7 @@ export class SEPDIPayrollDeduction extends QLinkBase implements SEPDIPayrollDedu
    * @param flag - How the payroll mandate is recorded SEPDIFlag enum.
    */
   constructor(
-    client: QlinkClient,
+    client: QLinkClient,
     fields: SEPDIPayrollDeductionFields
   ) {
     super();
