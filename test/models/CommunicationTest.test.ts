@@ -1,5 +1,5 @@
 import { CommunicationTest } from '../../src/models/CommunicationTest';
-import { Connection } from '../../src/models/Connection';
+import { QlinkClient } from '../../src/models/qlink-client';
 import { Logger } from '../../src/utils/Logger';
 import Config from '../../src/config';
 import { TransactionType } from '../../src/enums/TransactionType';
@@ -15,11 +15,11 @@ jest.mock('../../src/config', () => ({
   })
 }));
 jest.mock('../../src/utils/Logger');
-jest.mock('../../src/models/Connection');
+jest.mock('../../src/models/qlink-client');
 
 describe('CommunicationTest', () => {
   let communicationTest: CommunicationTest;
-  let connection: Connection;
+  let connection: QlinkClient;
 
   beforeEach(() => {
     Config.getInstance = jest.fn().mockReturnValue({
@@ -29,7 +29,7 @@ describe('CommunicationTest', () => {
       logLevel: '2',
       institutionId: 9999
     });
-    connection = new Connection({ transaction_type: TransactionType.COMMUNICATION_TEST, institution: 9999, payrollIdentifier: PayrollIdentifier.PERSAL, username: 'testUser', password: 'testPassword', effectiveSalaryMonth: '202301' });
+    connection = new QlinkClient({ transaction_type: TransactionType.COMMUNICATION_TEST, institution: 9999, payrollIdentifier: PayrollIdentifier.PERSAL, username: 'testUser', password: 'testPassword', effectiveSalaryMonth: '202301' });
     communicationTest = new CommunicationTest(connection);
   });
 

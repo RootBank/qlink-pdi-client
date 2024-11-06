@@ -7,9 +7,29 @@ export enum LogLevel {
 
 export class Logger {
   private logLevel: LogLevel;
+  private static instance: Logger;
 
-  constructor(level: LogLevel = LogLevel.ERROR) {
-    this.logLevel = level;
+  private constructor(level: LogLevel = LogLevel.ERROR) {
+    this.logLevel = this.parseLogLevel(process.env.Q_LINK_LOG_LEVEL || 'ERROR');
+  }
+
+  private parseLogLevel(level: string): LogLevel {
+    switch (level.toUpperCase()) {
+      case 'DEBUG':
+        return LogLevel.DEBUG;
+      case 'INFO':
+        return LogLevel.INFO;
+      case 'ERROR':
+      default:
+        return LogLevel.ERROR;
+    }
+  }
+
+  public static getInstance(): Logger {
+    if (!Logger.instance) {
+      Logger.instance = new Logger();
+    }
+    return Logger.instance;
   }
 
   // Helper to mask sensitive information in both JSON and XML

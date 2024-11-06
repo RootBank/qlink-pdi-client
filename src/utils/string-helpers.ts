@@ -6,7 +6,7 @@ import { QLinkError } from '../errors';
  * @param amount - The amount in cents to be formatted.
  * @returns A 10-character string representation of the amount, left-padded with zeros.
  */
-export function formatCentsToCharString(amount: string | number | undefined, characterLength: number = 10): string {
+export function formatToCharString(amount: string | number | undefined, characterLength: number = 10): string {
   const parsedAmount = parseInt(amount as string, 10) || 0;
 
   if (!Number.isInteger(parsedAmount)) {

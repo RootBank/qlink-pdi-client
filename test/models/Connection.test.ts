@@ -1,8 +1,8 @@
-import { Connection } from '../../src/models/Connection';
+import { QlinkClient } from '../../src/models/qlink-client';
 import { QLinkError } from '../../src/errors';
 import { axiosInstance } from '../../src/axiosConfig';
 import { TransactionType } from '../../src/enums/TransactionType';
-import { QLinkRequest, BulkQLinkRequest, ConnectionFields } from '../../src/types';
+import { QLinkRequest, BulkQLinkRequest, ConfigFields } from '../../src/types';
 import { Logger } from '../../src/utils/Logger';
 import Config from '../../src/config';
 import { PayrollIdentifier } from '../../src/enums/PayrollIdentifier';
@@ -11,9 +11,9 @@ import { getFutureEffectiveSalaryMonth } from '../testHelpers'
 jest.mock('../../src/axiosConfig');
 jest.mock('../../src/utils/Logger');
 
-describe('Connection', () => {
-  let connection: Connection;
-  let mockConfig: ConnectionFields;
+describe('QlinkClient', () => {
+  let connection: QlinkClient;
+  let mockConfig: ConfigFields;
 
   beforeEach(() => {
     mockConfig = {
@@ -25,14 +25,14 @@ describe('Connection', () => {
       effectiveSalaryMonth: getFutureEffectiveSalaryMonth(),
     };
 
-    connection = new Connection(mockConfig);
+    connection = new QlinkClient(mockConfig);
     jest.clearAllMocks();
   });
 
   describe('constructor', () => {
     it('should initialize and validate the connection config', () => {
       const loggerMock = jest.spyOn(Logger.prototype, 'debug');
-      new Connection(mockConfig);
+      new QlinkClient(mockConfig);
       expect(loggerMock).toHaveBeenCalledWith('Validating connection configuration');
     });
   });

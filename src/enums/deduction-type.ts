@@ -3,10 +3,7 @@
  * Enum for SEPDI Deduction Types with descriptions and institution types.
  */
 export enum DeductionType {
-  // General SEPDI types
-  SEPDI = 'SEPDI',
-  FEPDI = 'FEPDI',
-
+  UNKNOWN = "",
   // Insurance: Life Insurance
   SEPDI_INSURANCE_LIFE = "0010",
 

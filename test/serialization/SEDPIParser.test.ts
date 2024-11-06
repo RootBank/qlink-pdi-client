@@ -1,20 +1,20 @@
 // test/serialization/SEPDIPayrollDeductionParser.test.ts
 import { parseSEPDIPayrollDeductionFromXML } from '../../src/serialization/SEPDIParser';
 import { SEPDIPayrollDeduction } from '../../src/models/SEPDIPayrollDeduction';
-import { Connection } from '../../src/models/Connection';
+import { QlinkClient } from '../../src/models/qlink-client';
 import { SEPDIPayrollDeductionFields } from '../../src/types';
 import { TransactionType } from '../../src/enums/TransactionType';
 import { PayrollIdentifier } from '../../src/enums/PayrollIdentifier';
 import { QLinkError } from '../../src/errors';
 import { getFutureEffectiveSalaryMonth } from '../testHelpers';
 
-jest.mock('../../src/models/Connection');
+jest.mock('../../src/models/qlink-client');
 
 describe('parseSEPDIPayrollDeductionFromXML', () => {
-  let mockConnection: Connection;
+  let mockQlinkClient: QlinkClient;
 
   beforeEach(() => {
-    mockConnection = new Connection({
+    mockQlinkClient = new QlinkClient({
       transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
       institution: 1,
       payrollIdentifier: PayrollIdentifier.PERSAL,
@@ -60,7 +60,7 @@ describe('parseSEPDIPayrollDeductionFromXML', () => {
       </QLINK>`;
 
     const deduction = await parseSEPDIPayrollDeductionFromXML(
-      mockConnection,
+      mockQlinkClient,
       xmlData
     );
 

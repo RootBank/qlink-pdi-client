@@ -1,20 +1,20 @@
 // test/models/SEPDIPayrollDeduction.test.ts
 import { SEPDIPayrollDeduction } from '../../src/models/SEPDIPayrollDeduction';
-import { Connection } from '../../src/models/Connection';
+import { QlinkClient } from '../../src/models/qlink-client';
 import { QLinkError } from '../../src/errors';
 import { parseSEPDIPayrollDeductionFromXML } from '../../src/serialization/SEPDIParser';
 import { serializeSEPDIPayrollDeductionToXML } from '../../src/serialization/SEPDISerializer';
-import { SEPDIPayrollDeductionFields, ConnectionFields } from '../../src/types';
+import { SEPDIPayrollDeductionFields, ConfigFields } from '../../src/types';
 import { Logger } from '../../src/utils/Logger';
 import { getFutureEffectiveSalaryMonth } from '../testHelpers';
 import { PayrollIdentifier } from '../../src/enums/PayrollIdentifier';
 import { TransactionType } from '../../src/enums/TransactionType';
 
-class MockConnection extends Connection {
-  private mockConfig: Partial<ConnectionFields>;
+class MockQlinkClient extends QlinkClient {
+  private mockConfig: Partial<ConfigFields>;
 
-  constructor(mockFields: Partial<ConnectionFields>) {
-    // Call the original Connection constructor with default fields
+  constructor(mockFields: Partial<ConfigFields>) {
+    // Call the original QlinkClient constructor with default fields
     super({
       transaction_type: mockFields.transaction_type || TransactionType.Q_LINK_TRANSACTIONS,
       payrollIdentifier: mockFields.payrollIdentifier || PayrollIdentifier.PERSAL,
@@ -27,7 +27,7 @@ class MockConnection extends Connection {
   }
 
   // Override the connectionConfig getter
-  public get connectionConfig(): ConnectionFields {
+  public get connectionConfig(): ConfigFields {
     return {
       ...super.connectionConfig,
       ...this.mockConfig
@@ -35,18 +35,18 @@ class MockConnection extends Connection {
   }
 }
 
-jest.mock('../../src/models/Connection');
+jest.mock('../../src/models/qlink-client');
 jest.mock('../../src/serialization/SEPDIParser');
 jest.mock('../../src/serialization/SEPDISerializer');
 jest.mock('../../src/utils/Logger');
 
 describe('SEPDIPayrollDeduction', () => {
-  let connection: Connection;
+  let connection: QlinkClient;
   let fields: Partial<SEPDIPayrollDeductionFields>;
   let deduction: SEPDIPayrollDeduction;
 
   beforeEach(() => {
-    connection = new MockConnection({
+    connection = new MockQlinkClient({
       transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
       institution: 1,
       payrollIdentifier: PayrollIdentifier.PERSAL,

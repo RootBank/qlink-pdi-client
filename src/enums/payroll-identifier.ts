@@ -1,5 +1,6 @@
 /* eslint-disable no-unused-vars */
 export enum PayrollIdentifier {
+  UNKNOWN = '',
   PERSAL = '0001', // All Government employees except SANDF
   SANDF = '0002', // South African National Defence Force
   SARS = '0004', // South African Revenue Services

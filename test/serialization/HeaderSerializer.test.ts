@@ -1,12 +1,12 @@
 import { PayrollIdentifier } from '../../src/enums/PayrollIdentifier';
 import { TransactionType } from '../../src/enums/TransactionType';
 import { serializeHeaderToXML } from '../../src/serialization/HeaderSerializer';
-import { ConnectionFields } from '../../src/types';
+import { ConfigFields } from '../../src/types';
 import { getFutureEffectiveSalaryMonth } from '../testHelpers';
 
 describe('serializeHeaderToXML', () => {
-  it('should serialize ConnectionFields with required fields only', () => {
-    const connectionFields: ConnectionFields = {
+  it('should serialize ConfigFields with required fields only', () => {
+    const connectionFields: ConfigFields = {
       transaction_type: TransactionType.COMMUNICATION_TEST,
       institution: 9999,
       payrollIdentifier: PayrollIdentifier.PERSAL,
@@ -28,8 +28,8 @@ describe('serializeHeaderToXML', () => {
     expect(xml.trim()).toBe(expectedXML.trim());
   });
 
-  it('should serialize ConnectionFields with all fields present', () => {
-    const connectionFields: ConnectionFields = {
+  it('should serialize ConfigFields with all fields present', () => {
+    const connectionFields: ConfigFields = {
       transaction_type: TransactionType.COMMUNICATION_TEST,
       institution: 9999,
       payrollIdentifier: PayrollIdentifier.PERSAL,
@@ -54,7 +54,7 @@ describe('serializeHeaderToXML', () => {
   });
 
   it('should handle missing optional fields (effectiveSalaryMonth and key)', () => {
-    const connectionFields: ConnectionFields = {
+    const connectionFields: ConfigFields = {
       transaction_type: TransactionType.COMMUNICATION_TEST,
       institution: 9999,
       payrollIdentifier: PayrollIdentifier.PERSAL,

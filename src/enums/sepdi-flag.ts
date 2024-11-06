@@ -2,6 +2,7 @@
  * Enum for SEPDI Flag values based on institution type and mandate requirements.
  */
 export enum SEPDIFlag {
+  UNKNOWN = "",
   /**
    * "P" - Paper mandate for insurance institutions. Used when the stop order mandate is on paper.
    */

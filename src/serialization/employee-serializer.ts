@@ -1,12 +1,12 @@
-import { EmployeeFields } from '../types';
 import { js2xml } from 'xml-js';
+import { EmployeeQueryParameter } from '../types';
 
-export function serializeEmployeeToXML(fields: EmployeeFields): string {
+export function serializeEmployeeQueryParametersToXML(fields: EmployeeQueryParameter): string {
   const options = { compact: true, ignoreComment: true, spaces: 4 };
   const sepdiData = {
     DATA: {
       EMPL_NO: fields.employeeNumber,
-      IDNO: fields.idNumber || '',
+      IDNO: fields.idNumber,
       REFERENCE_NO: fields.referenceNumber
     }
   };

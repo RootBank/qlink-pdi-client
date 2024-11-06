@@ -1,7 +1,7 @@
 // test/serialization/EmployeeParser.test.ts
 
 import { parseEmployeeFromXML } from '../../src/serialization/EmployeeParser';
-import { Connection } from '../../src/models/Connection';
+import { QlinkClient } from '../../src/models/qlink-client';
 import { Employee } from '../../src/models/Employee';
 import { QLinkError } from '../../src/errors';
 import { EmployeeStatusReason } from '../../src/enums/EmployeeStatusReason';
@@ -10,13 +10,13 @@ import { PayrollIdentifier } from '../../src/enums/PayrollIdentifier';
 import { TransactionType } from '../../src/enums/TransactionType';
 import { getFutureEffectiveSalaryMonth } from '../testHelpers'
 
-jest.mock('../../src/models/Connection');
+jest.mock('../../src/models/qlink-client');
 
 describe('parseEmployeeFromXML', () => {
-  let mockConnection: Connection;
+  let mockQlinkClient: QlinkClient;
 
   beforeEach(() => {
-    mockConnection = new Connection({
+    mockQlinkClient = new QlinkClient({
       transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
       institution: 9999,
       payrollIdentifier: PayrollIdentifier.PERSAL,
@@ -51,7 +51,7 @@ describe('parseEmployeeFromXML', () => {
         </DATA>
       </QLINK>`;
 
-    const employee = await parseEmployeeFromXML(mockConnection, xmlData);
+    const employee = await parseEmployeeFromXML(mockQlinkClient, xmlData);
 
     expect(employee).toBeInstanceOf(Employee);
     expect(employee.fields.employeeNumber).toBe('12510814');
