@@ -11,7 +11,7 @@ import { TranType } from '../enums/tran-type';
 
 const logger = Logger.getInstance();
 
-export class QlinkClient {
+export class QLinkClient {
   public readonly baseUrl: string;
   public readonly username: string;
   public readonly password: string;
@@ -19,7 +19,7 @@ export class QlinkClient {
   private readonly axiosInstance: Axios;
 
   constructor(configuration: Configuration) {
-    logger.debug('Initializing QlinkClient...');
+    logger.debug('Initializing QLinkClient...');
     this.baseUrl = configuration.baseUrl || 'https://govtest.qlink.co.za/cgi-bin/XmlProc';
     this.username = configuration.username;
     this.password = configuration.password;

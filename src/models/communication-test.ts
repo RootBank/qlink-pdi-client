@@ -1,4 +1,4 @@
-import { QlinkClient } from './qlink-client';
+import { QLinkClient } from './qlink-client';
 import { Logger } from '../utils/logger-util';
 import { QLinkError } from '../errors';
 import { TransactionType } from '../enums/transaction-type';
@@ -9,9 +9,9 @@ import { QLinkRequest } from './qlink-request';
 const logger = Logger.getInstance();
 
 export class CommunicationTest extends QLinkBase {
-  private client: QlinkClient;
+  private client: QLinkClient;
 
-  constructor(client: QlinkClient) {
+  constructor(client: QLinkClient) {
     super();
     this.client = client;
   }
