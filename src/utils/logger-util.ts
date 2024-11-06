@@ -64,7 +64,14 @@ export class Logger {
     if (messageLevel >= this.logLevel) {
       // Mask sensitive info in message and details
       const maskedMessage = this.maskSensitiveInfo(message);
-      const maskedDetails = details ? this.maskSensitiveInfo(details) : '';
+      let maskedDetails = '';
+
+      // Check if details is an error object and format accordingly
+      if (details instanceof Error) {
+        maskedDetails = `Error: ${details.message}\nStack: ${details.stack}`;
+      } else if (details) {
+        maskedDetails = this.maskSensitiveInfo(details);
+      }
 
       // Log the message with masked information
       const logMessage = `[${LogLevel[messageLevel]}]: ${maskedMessage}` +
