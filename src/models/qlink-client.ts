@@ -228,7 +228,7 @@ export class QLinkClient {
       }
 
       const deductionFields: SEPDIPayrollDeductionFields = {
-        amount: 0,
+        amount: params.amount,
         payrollIdentifier: params.payrollIdentifier,
         employeeNumber: params.employeeNumber,
         referenceNumber: params.referenceNumber,

@@ -73,9 +73,10 @@ export interface CreateInsurancePayrollDeductionFields {
 export interface DeleteInsurancePayrollDeductionFields {
   // tranType: TranType; // TranType enum:  QDEL
   referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
-  endDate: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
+  // endDate: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
   employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
   payrollIdentifier: PayrollIdentifier;
+  amount: number; // cents The monthly amount to be deducted.
   // startDate?: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
   idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
   surname?: string; // character set: [A-Z\s] only
@@ -89,6 +90,7 @@ export interface UpdateReferenceFields {
   employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
   payrollIdentifier: PayrollIdentifier;
   deductionType: DeductionType; // insurance related codes.
+  amount: number; // cents The monthly amount to be deducted.
   // tranType: TranType; // TranType enum:  QFIX
   // QFIX: Change the reference number or deduction type of a deduction
   newDeductionType?: string; // only for QFIX 

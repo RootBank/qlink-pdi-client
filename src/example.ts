@@ -35,6 +35,8 @@ const main = async () => {
   // await qlink.createInsurancePayrollDeduction(deductionFields);
 
   const beginDeductionFrom = new Date("2024-12");
+
+  /**
   const deductionFields = {
     employeeNumber: governmentEmployeeNumber,
     amount: 12000,
@@ -61,16 +63,17 @@ const main = async () => {
   console.log(fixDeductionFields);
   const results3 = await qlink.updateDeductionReferences(fixDeductionFields);
   console.log(results3);
+   */
 
-  const delDeductionFields = {
+  const delDeductionFields: DeleteInsurancePayrollDeductionFields = {
     employeeNumber: governmentEmployeeNumber,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     referenceNumber: "A222222",
-    // amount: 11000,
+    amount: 11000,
     cancelDeductionFrom: beginDeductionFrom,
     deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
     // mandateCapturedOn: MandateCapture.PAPER_MANDATE,
-  } as DeleteInsurancePayrollDeductionFields
+  }
   console.log(delDeductionFields);
   const results2 = await qlink.deleteDeduction(delDeductionFields);
   console.log(results2);
