@@ -72,3 +72,4 @@ export enum SEPDIFlag {
    */
   NSFAS_INCREASE_WITH_CPI = "I"
 }
+export { SEPDIFlag as MandateCapture };

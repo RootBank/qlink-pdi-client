@@ -1,6 +1,6 @@
 import axios, { Axios, AxiosError } from 'axios';
 import { QLinkError } from '../errors';
-import { EmployeeQueryParameter, SEPDIPayrollDeductionFields, Configuration } from '../types';
+import { EmployeeQueryParameter, SEPDIPayrollDeductionFields, Configuration, CreateInsurancePayrollDeductionFields } from '../types';
 import { Logger } from '../utils/logger-util';
 import { QLinkStatusCode } from '../enums/qlink-status-code';
 import { CommunicationTest } from './communication-test';
@@ -8,6 +8,7 @@ import { SEPDIPayrollDeduction } from './sepdi-payroll-deduction';
 import { QLinkRequest } from './qlink-request';
 import { Employee } from './government-employee';
 import { TranType } from '../enums/tran-type';
+import { formatDate, IdFromBirthDate } from '../utils/date-helpers';
 
 const logger = Logger.getInstance();
 
@@ -84,9 +85,9 @@ export class QLinkClient {
       const isConnected = await new CommunicationTest(this).run();
       logger.debug("Connection status: SUCCESSFULLY CONNECTED");
       return isConnected;
-    } catch (error) {
+    } catch (error: any) {
       logger.error("Connection test FAILED", error);
-      throw new QLinkError("Connection test failed. Please verify your credentials and endpoint.");
+      throw new QLinkError(error.message);
     }
   }
 
@@ -96,21 +97,42 @@ export class QLinkClient {
       const employee = await Employee.find(this, params);
       logger.debug("Employee found");
       return employee;
-    } catch (error) {
+    } catch (error: any) {
       logger.error("Failed to find employee", error);
-      throw new QLinkError("Failed to find employee");
+      throw new QLinkError(`Failed to find employee. ${error.message}`);
     }
   }
 
-  public async createInsurancePayrollDeduction(params: SEPDIPayrollDeductionFields): Promise<SEPDIPayrollDeduction> {
+  public async createInsurancePayrollDeduction(params: CreateInsurancePayrollDeductionFields): Promise<SEPDIPayrollDeduction> {
     try {
       logger.debug(`Creating new deduction on ${params.payrollIdentifier} Payroll...`);
-      const isConnected = await new SEPDIPayrollDeduction(this, { ...params, tranType: TranType.NEW_DEDUCTION }).save();
+      logger.debug(`Finding employee: ${params.employeeNumber}`);
+      const employee = await this.queryEmployeeInfo({ employeeNumber: params.employeeNumber, payrollIdentifier: params.payrollIdentifier, idNumber: params.idNumber })
+      logger.debug(`Found employee: ${employee.employeeNumber}`);
+
+      const deductionFields: SEPDIPayrollDeductionFields = {
+        payrollIdentifier: params.payrollIdentifier,
+        amount: params.amount,
+        deductionType: params.deductionType,
+        employeeNumber: params.employeeNumber,
+        flag: params.mandateCapturedOn,
+        referenceNumber: params.referenceNumber,
+        tranType: TranType.NEW_DEDUCTION,
+        effectiveSalaryMonth: params.effectiveSalaryMonth ? params.effectiveSalaryMonth : formatDate(params.beginDeductionFrom).ccyyMM,
+        startDate: formatDate(params.beginDeductionFrom).ccyyMM01,
+
+        idNumber: params.idNumber ? params.idNumber : IdFromBirthDate(employee.birthDate as string),
+        surname: params.surname ? (params.surname) : (employee.surname ? employee.surname : "SURNAME"),
+        endDate: params.endDate,
+      }
+
+      logger.debug(`Creating SEPDI Deduction for employee: ${JSON.stringify(deductionFields)}`);
+      const newPayrollDeduction = await new SEPDIPayrollDeduction(this, deductionFields).save();
       logger.debug("new SEPDI Deduction successfully created");
-      return isConnected;
-    } catch (error) {
+      return newPayrollDeduction;
+    } catch (error: any) {
       logger.error("new SEPDI Deduction failed", error);
-      throw new QLinkError("new SEPDI Deduction failed");
+      throw new QLinkError(`new SEPDI Deduction failed. ${error.message}`);
     }
   }
 

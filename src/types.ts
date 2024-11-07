@@ -2,7 +2,7 @@ import { TransactionType } from './enums/transaction-type';
 import { PayrollIdentifier } from './enums/payroll-identifier';
 import { TranType } from './enums/tran-type';
 import { DeductionType } from './enums/deduction-type';
-import { SEPDIFlag } from './enums/sepdi-flag';
+import { MandateCapture, SEPDIFlag } from './enums/sepdi-flag';
 
 /**
  * Configuration required for establishing a connection with the Q LINK API.
@@ -45,10 +45,27 @@ export interface Configuration {
 
 // // Header-specific fields
 export interface Header extends Configuration {
-  transactionType?: TransactionType; // (TRX)
-  payrollIdentifier?: PayrollIdentifier; // Payroll Identifier (PAY)
-  effectiveSalaryMonth?: string; // Salary month in CCYYMM format (SALMON)
+  transactionType: TransactionType; // (TRX)
+  payrollIdentifier: PayrollIdentifier; // Payroll Identifier (PAY)
+  effectiveSalaryMonth: string; // Salary month in CCYYMM format (SALMON)
   key?: string; // (KEY) Optional client-specific transaction key. Q LINK does not use the value of the KEY. If a key was entered, the key is returned with the reply of the request and is solely for the use of the client to link the packet sent with the reply received
+  initials?: string; // Initials of the employee (no spaces or special characters are allowed)
+}
+
+export interface CreateInsurancePayrollDeductionFields {
+  amount: number; // cents The monthly amount to be deducted.
+  deductionType: DeductionType; // insurance related codes.
+  employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
+  payrollIdentifier: PayrollIdentifier;
+  referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
+  mandateCapturedOn: MandateCapture; // For Insurance Institutions -- see enums SEPDIFlag alias MandateCapture
+  beginDeductionFrom: Date; // automatically deduces the SALMON and START DATE.
+  effectiveSalaryMonth?: string; // Salary month in CCYYMM format (SALMON)
+  startDate?: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
+
+  idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
+  surname?: string; // character set: [A-Z\s] only
+  endDate?: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
 }
 
 // SEPDI-specific fields
