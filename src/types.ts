@@ -68,9 +68,7 @@ export interface CreateInsurancePayrollDeductionFields {
   endDate?: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
 }
 
-// export interface PremiumHolidayInsurancePayrollDeductionFields {
-
-// }
+// export interface PremiumHolidayInsurancePayrollDeductionFields { }
 
 export interface DeleteInsurancePayrollDeductionFields {
   // tranType: TranType; // TranType enum:  QDEL
@@ -81,6 +79,7 @@ export interface DeleteInsurancePayrollDeductionFields {
   // startDate?: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
   idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
   surname?: string; // character set: [A-Z\s] only
+  deductionType: DeductionType; // insurance related codes.
 
   cancelDeductionFrom: Date; // automatically deduces the SALMON and START DATE.
 }
@@ -89,6 +88,7 @@ export interface UpdateReferenceFields {
   referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
   employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
   payrollIdentifier: PayrollIdentifier;
+  deductionType: DeductionType; // insurance related codes.
   // tranType: TranType; // TranType enum:  QFIX
   // QFIX: Change the reference number or deduction type of a deduction
   newDeductionType?: string; // only for QFIX 
@@ -107,6 +107,7 @@ export interface UpdateAmountFields {
   // tranType: TranType; // TranType enum: QUPD
   employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
   payrollIdentifier: PayrollIdentifier;
+  deductionType: DeductionType; // insurance related codes.
 
   // QFIX: Change the reference number or deduction type of a deduction
   // newDeductType?: string; // only for QFIX for the Correct Reference Number

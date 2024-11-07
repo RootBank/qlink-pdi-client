@@ -156,7 +156,7 @@ export class QLinkClient {
       const deductionFields: SEPDIPayrollDeductionFields = {
         payrollIdentifier: params.payrollIdentifier,
         amount: params.amount,
-        deductionType: DeductionType.UNKNOWN,
+        deductionType: params.deductionType,
         employeeNumber: params.employeeNumber,
         flag: MandateCapture.UNKNOWN,
         referenceNumber: params.referenceNumber,
@@ -192,7 +192,7 @@ export class QLinkClient {
       const deductionFields: SEPDIPayrollDeductionFields = {
         payrollIdentifier: params.payrollIdentifier,
         amount: 0,
-        deductionType: DeductionType.UNKNOWN,
+        deductionType: params.deductionType,
         flag: MandateCapture.UNKNOWN,
         employeeNumber: params.employeeNumber,
         referenceNumber: params.referenceNumber,
@@ -233,7 +233,7 @@ export class QLinkClient {
         employeeNumber: params.employeeNumber,
         referenceNumber: params.referenceNumber,
         tranType: TranType.DELETION,
-        deductionType: DeductionType.UNKNOWN,
+        deductionType: params.deductionType,
         flag: MandateCapture.UNKNOWN,
         effectiveSalaryMonth: formatDate(params.cancelDeductionFrom).ccyyMM,
         endDate: formatDate(params.cancelDeductionFrom).ccyyMMLastDayOfPreviousMonth,
