@@ -5,6 +5,7 @@
  */
 export function formatDate(date: Date): {
   ccyyMM: string;
+  ccyyMMdd: string;
   ccyyMM01: string;
   ccyyMMLastDay: string;
   ccyyMMLastDayOfPreviousMonth: string;
@@ -12,9 +13,13 @@ export function formatDate(date: Date): {
 } {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDay() + 1).padStart(2, '0');
 
   // CCYYMM format
   const ccyyMM = `${year}${month}`;
+
+  // CCYYMMDD format
+  const ccyyMMdd = `${year}${month}${day}`;
 
   // CCYYMM01 format (first day of the month)
   const ccyyMM01 = `${year}${month}01`;
@@ -34,6 +39,7 @@ export function formatDate(date: Date): {
 
   return {
     ccyyMM,
+    ccyyMMdd,
     ccyyMM01,
     ccyyMMLastDay,
     ccyyMMLastDayOfPreviousMonth,

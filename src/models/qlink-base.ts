@@ -7,4 +7,11 @@ export abstract class QLinkBase {
    * This method must be implemented by derived classes.
    */
   abstract toXML(): string;
+
+  /**
+   * Converts the instance data to File Layout format.
+   * This method must be implemented by derived classes.
+   */
+  abstract toFile(): string;
+
 }

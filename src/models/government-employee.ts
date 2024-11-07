@@ -67,6 +67,10 @@ export class Employee extends QLinkBase implements EmployeeQueryParameter {
     return serializeEmployeeQueryParametersToXML({ employeeNumber: this.employeeNumber, payrollIdentifier: this.payrollIdentifier, idNumber: this.idNumber, referenceNumber: this.referenceNumber });
   }
 
+  toFile(): string {
+    return '';
+  }
+
   static async find(client: QLinkClient, queryParams: EmployeeQueryParameter): Promise<Employee> {
     const header = new Header(client.connectionConfig(), { transactionType: TransactionType.EMPLOYEE_ENQUIRIES, payrollIdentifier: queryParams.payrollIdentifier });
     const data = new Employee(queryParams);

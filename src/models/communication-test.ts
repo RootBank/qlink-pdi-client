@@ -20,6 +20,10 @@ export class CommunicationTest extends QLinkBase {
     return '';
   }
 
+  toFile(): string {
+    return '';
+  }
+
   async run(): Promise<boolean> {
     const header = new Header(this.client.connectionConfig(), { transactionType: TransactionType.COMMUNICATION_TEST })
     const requestData = new QLinkRequest(header, this)

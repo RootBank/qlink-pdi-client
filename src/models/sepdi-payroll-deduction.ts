@@ -181,6 +181,41 @@ export class SEPDIPayrollDeduction extends QLinkBase implements SEPDIPayrollDedu
     return serializedXML;
   }
 
+  toFile(): string {
+    // this.validate();
+    return (
+      `${this.tranType?.padEnd(4, ' ')}${this.employeeNumber.padEnd(15, ' ')}${this.surname.padEnd(25, ' ')}`
+      + `${(this.initials || '').padEnd(8, ' ')}${(this.idNumber || '').padEnd(13, ' ')}`
+      + `${this.referenceNumber.padEnd(30, ' ')}`
+      + `${String(this.amount).padStart(10, '0')}${String(this.balance || 0).padStart(10, '0')}`
+      + `${'0'.padStart(10, '0')}${this.startDate.padStart(8, '0')}`
+      + `${this.endDate ? this.endDate.padEnd(8, '0') : ''.padEnd(8, '0')}${this.deductionType.padEnd(4, ' ')}`
+      + `${this.corrRefNo ? this.corrRefNo.padEnd(30, '0') : ''.padEnd(30, '0')}`
+      + `${'0'.padEnd(5, '0')}`
+      + `${'0'.padEnd(10, ' ')}`
+      + `${'0'.padEnd(20, ' ')}`
+      + `${'0'.padEnd(4, ' ')}`
+      + `${'0'.padEnd(4, ' ')}`
+      + `${this.flag.padEnd(1, ' ')}`
+      + `${''.padEnd(8, ' ')}`
+      + `${(this.newDeductType || '0').padEnd(4, ' ')}`
+      + `${'0'.padEnd(10, ' ')}`
+      + `${'0'}`
+      + `${'0'.padEnd(11, ' ')}`
+      + `${'0'.padEnd(4, ' ')}`
+      + `${'COMMENTS'.padEnd(30, ' ')}`
+      + `${'0'.padEnd(10, ' ')}`
+      + `${'0'.padEnd(10, ' ')}`
+      + `${'0'.padEnd(10, ' ')}`
+      + `${'0'.padEnd(10, ' ')}`
+      + `${'0'.padEnd(15, ' ')}`
+      + `${'0'.padEnd(8, ' ')}`
+      + `${'0'.padEnd(30, ' ')}`
+      + `${'0'.padEnd(1, ' ')}`
+      + `${'0'.padEnd(20, ' ')}`
+    );
+  }
+
   validate(): void {
     if (!this.employeeNumber) {
       throw new QLinkError('Employee Number is required.');
@@ -272,6 +307,12 @@ export class SEPDIPayrollDeduction extends QLinkBase implements SEPDIPayrollDedu
       }
     }
     // Add other validations as necessary
+  }
+
+  lazySave(): QLinkRequest {
+    this.validate();
+    const header = new Header(this.client.connectionConfig(), { transactionType: this.transactionType, effectiveSalaryMonth: this.effectiveSalaryMonth, payrollIdentifier: this.payrollIdentifier });
+    return new QLinkRequest(header, this);
   }
 
   async save(): Promise<SEPDIPayrollDeduction> {
