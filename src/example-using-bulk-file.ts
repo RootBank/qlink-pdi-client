@@ -30,7 +30,6 @@ const main = async () => {
     mandateCapturedOn: MandateCapture.PAPER_MANDATE,
   }
   const results1 = await qlink.createInsurancePayrollDeduction(deductionFields1);
-  console.log(results1);
 
   const deductionFields2: CreateInsurancePayrollDeductionFields = {
     employeeNumber: "84325933",
@@ -42,7 +41,6 @@ const main = async () => {
     mandateCapturedOn: MandateCapture.PAPER_MANDATE,
   }
   const results2 = await qlink.createInsurancePayrollDeduction(deductionFields2);
-  console.log(results2);
 
   const request = new QLinkRequest(results1.header, [results1, results2]);
   qlink.sendBulkRequest(request)
