@@ -9,6 +9,7 @@ import { QLinkRequest } from './qlink-request';
 import { Employee } from './government-employee';
 import { TranType } from '../enums/tran-type';
 import { formatDate, IdFromBirthDate } from '../utils/date-helpers';
+import { EmployeeStatus } from '../enums/employee-status';
 
 const logger = Logger.getInstance();
 
@@ -109,6 +110,9 @@ export class QLinkClient {
       logger.debug(`Finding employee: ${params.employeeNumber}`);
       const employee = await this.queryEmployeeInfo({ employeeNumber: params.employeeNumber, payrollIdentifier: params.payrollIdentifier, idNumber: params.idNumber })
       logger.debug(`Found employee: ${employee.employeeNumber}`);
+      if (employee.empStatus != EmployeeStatus.CURRENT) {
+        throw new QLinkError(`Employee (${employee.employeeNumber}) is not currently employed: ${employee.empStatus} ${employee.empStatusReason}`);
+      }
 
       const deductionFields: SEPDIPayrollDeductionFields = {
         payrollIdentifier: params.payrollIdentifier,
