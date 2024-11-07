@@ -40,7 +40,7 @@ const main = async () => {
     amount: 12000,
     beginDeductionFrom: beginDeductionFrom,
     referenceNumber: "ASQ6543FHAHDCS1",
-    deductionType: DeductionType.SEPDI_INSURANCE_ANNUITY,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     // mandateCapturedOn: MandateCapture.PAPER_MANDATE,
   } as UpdateAmountFields
@@ -54,7 +54,7 @@ const main = async () => {
     amount: 11000,
     beginDeductionFrom: beginDeductionFrom,
     referenceNumber: "A222222",
-    deductionType: DeductionType.SEPDI_INSURANCE_ANNUITY,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
     payrollIdentifier: PayrollIdentifier.PERSAL,
     // mandateCapturedOn: MandateCapture.PAPER_MANDATE,
   } as UpdateReferenceFields
@@ -68,7 +68,7 @@ const main = async () => {
     referenceNumber: "A222222",
     // amount: 11000,
     cancelDeductionFrom: beginDeductionFrom,
-    deductionType: DeductionType.SEPDI_INSURANCE_ANNUITY,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
     // mandateCapturedOn: MandateCapture.PAPER_MANDATE,
   } as DeleteInsurancePayrollDeductionFields
   console.log(delDeductionFields);
