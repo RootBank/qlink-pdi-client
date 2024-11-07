@@ -225,20 +225,22 @@ export class SEPDIPayrollDeduction extends QLinkBase implements SEPDIPayrollDedu
         this.endDate = '00000000'; // default end date.
       }
       try {
-        const startDate = new Date(`${this.startDate.slice(0, 4)}-${this.startDate.slice(4, 6)}-${this.startDate.slice(6, 8)}`);
+        if (this.tranType !== TranType.DELETION) {
+          const startDate = new Date(`${this.startDate.slice(0, 4)}-${this.startDate.slice(4, 6)}-${this.startDate.slice(6, 8)}`);
 
-        if (isNaN(startDate.getTime())) {
-          throw new RangeError('Invalid START_DATE format.');
-        }
+          if (isNaN(startDate.getTime())) {
+            throw new RangeError('Invalid START_DATE format.');
+          }
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+          const today = new Date();
+          today.setHours(0, 0, 0, 0);
 
-        if (startDate <= today) {
-          throw new QLinkError('START_DATE must be in the future.');
-        }
-        if (startDate.getDate() !== 1) {
-          throw new QLinkError('START_DATE must be the first day of the month.');
+          if (startDate <= today) {
+            throw new QLinkError('START_DATE must be in the future.');
+          }
+          if (startDate.getDate() !== 1) {
+            throw new QLinkError('START_DATE must be the first day of the month.');
+          }
         }
         if (this.tranType === TranType.DELETION) {
           if (!this.endDate) {
