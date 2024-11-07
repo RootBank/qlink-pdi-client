@@ -10,11 +10,11 @@ This library provides a client for sending requests to the QLink API, specifical
 To use the `qlink-pdi-client`, ensure you have the following environment variables configured in a `.env` file:
 
 ```bash
-Q_LINK_USER=yourUsername
-Q_LINK_PASSWORD=yourPassword
-Q_LINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
-Q_LINK_INSTITUTION_ID=9999
-Q_LINK_LOG_LEVEL=DEBUG
+QLINK_USER=yourUsername
+QLINK_PASSWORD=yourPassword
+QLINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
+QLINK_INSTITUTION_ID=9999
+QLINK_LOG_LEVEL=DEBUG
 ```
 
 ## Usage Example
@@ -25,84 +25,88 @@ Note: All SEPDI and FEPDI transactions types (TRX) must be set to Q_LINK_TRANSAC
 ### Step-by-Step Example
 
 ```typescript
-import { QLinkClient } from './models/qlink-client';
-import { DeductionType } from './enums/DeductionType';
-import { PayrollDeductionFactory } from './factories/PayrollDeductionFactory';
-import { PayrollIdentifier } from './enums/PayrollIdentifier';
-import { TransactionType } from './enums/TransactionType';
-import { CommunicationTest } from './models/CommunicationTest';
-import { Employee } from './models/Employee';
-import { SEPDIPayrollDeductionFields } from './types';
-import Config from './config';
-import { SEPDIFlag } from './enums/SEPDIFlag';
-import { TranType } from './enums/TranType';
 
-async function run() {
-  // Define connection configuration
-  const config = Config.getInstance();
-  console.log(config);
-  const test_connection = new QLinkClient({
-    transaction_type: TransactionType.COMMUNICATION_TEST,
-    payrollIdentifier: PayrollIdentifier.PERSAL,
-    username: config.qLinkUser,
-    password: config.qLinkPassword,
-    institution: config.institutionId,
-  });
-  const comms_test = new CommunicationTest(test_connection);
-  comms_test.save();
+import dotenv from 'dotenv';
+import { Configuration, CreateInsurancePayrollDeductionFields, DeductionType, DeleteInsurancePayrollDeductionFields, MandateCapture, PayrollIdentifier, QLinkClient, UpdateAmountFields, UpdateReferenceFields } from 'qlink-pdi-client';
 
-  // find an employee
-  const employeeQLinkClient = new QLinkClient({
-    transaction_type: TransactionType.EMPLOYEE_ENQUIRIES,
-    payrollIdentifier: PayrollIdentifier.PERSAL,
-    username: config.qLinkUser,
-    password: config.qLinkPassword,
-    institution: config.institutionId,
-  });
-  const employee = new Employee(employeeQLinkClient, {
-    employeeNumber: '82714673',
-  });
-  const foundEmployee = await employee.find();
-  console.log(foundEmployee);
+dotenv.config();
 
-  // Single SEPDI Deduction using only compulsory fields
-  const transactionQLinkClient = new QLinkClient({
-    transaction_type: TransactionType.Q_LINK_TRANSACTIONS,
-    payrollIdentifier: PayrollIdentifier.PERSAL,
-    username: config.qLinkUser,
-    password: config.qLinkPassword,
-    institution: config.institutionId,
-    effectiveSalaryMonth: '202512'
-  });
-  const sepdiFields: SEPDIPayrollDeductionFields = {
-    employeeNumber: foundEmployee.employeeNumber || '',
-    amount: 500,
+const main = async () => {
+  const qlink = new QLinkClient(
+    {
+      institution: Number(process.env.QLINK_INSTITUTION_ID),
+      password: process.env.QLINK_PASSWORD,
+      username: process.env.QLINK_USERNAME,
+      baseUrl: process.env.QLINK_URL,
+    } as Configuration
+  )
+
+  await qlink.testConnection();
+
+  const governmentEmployeeNumber = "84177942";
+  const employee = await qlink.queryEmployeeInfo({ employeeNumber: governmentEmployeeNumber, payrollIdentifier: PayrollIdentifier.PERSAL });
+  console.log(employee);
+
+  const beginDeductionFrom = new Date("2024-12");
+  let amount: number = 10000;
+  let refNumber: string = "ASQ6543FHAHDCS1";
+  const deductionFields: CreateInsurancePayrollDeductionFields = {
+    employeeNumber: governmentEmployeeNumber,
+    amount: amount,
+    beginDeductionFrom: beginDeductionFrom,
+    referenceNumber: refNumber,
     deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
-    startDate: '20241201',
-    surname: foundEmployee.surname || 'QLINK SURNAME',
-    initials: 'Q S',
-    idNumber: `${foundEmployee.birthDate?.slice(-6)}0000000`,
-    referenceNumber: 'REF123',
-    flag: SEPDIFlag.PAPER_MANDATE,
-    transactionType: TranType.NEW_DEDUCTION
-  };
-  const sepdiDeduction = PayrollDeductionFactory.create(
-    transactionQLinkClient,
-    DeductionType.SEPDI,
-    sepdiFields
-  );
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    mandateCapturedOn: MandateCapture.PAPER_MANDATE,
+  }
+  const results1 = await qlink.createInsurancePayrollDeduction(deductionFields);
+  console.log(results1);
 
-  await sepdiDeduction.save();
-}
+  amount += 10000;
+  const updateDeductionFields: UpdateAmountFields = {
+    employeeNumber: governmentEmployeeNumber,
+    amount: amount,
+    beginDeductionFrom: beginDeductionFrom,
+    referenceNumber: refNumber,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+  }
+  console.log(updateDeductionFields);
+  const results2 = await qlink.updateDeductionAmount(updateDeductionFields);
+  console.log(results2);
 
-// Run the async function
-run();
+  refNumber = "A222222";
+  const fixDeductionFields: UpdateReferenceFields = {
+    employeeNumber: governmentEmployeeNumber,
+    amount: amount,
+    beginDeductionFrom: beginDeductionFrom,
+    referenceNumber: refNumber,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+  }
+  console.log(fixDeductionFields);
+  const results3 = await qlink.updateDeductionReferences(fixDeductionFields);
+  console.log(results3);
+
+  const delDeductionFields: DeleteInsurancePayrollDeductionFields = {
+    employeeNumber: governmentEmployeeNumber,
+    payrollIdentifier: PayrollIdentifier.PERSAL,
+    referenceNumber: refNumber,
+    amount: amount,
+    cancelDeductionFrom: beginDeductionFrom,
+    deductionType: DeductionType.SEPDI_INSURANCE_LIFE,
+  }
+  console.log(delDeductionFields);
+  const results4 = await qlink.deleteDeduction(delDeductionFields);
+  console.log(results4);
+};
+
+main();
 ```
 
 ### Explanation
 
-- **QLinkClient Configuration**: Initializes the connection using `QLinkClient` with environment-based configuration and transaction details.
-- **Deduction Creation**: Creates both single and bulk deductions using `PayrollDeductionFactory` and sends them with `save`.
+- **QLinkClient Configuration**: Initializes the connection using `QLinkClient` with environment-based configuration and transaction details. `QlinkClient` exposes service methods for retrieving employee information and managing payroll deductions.
 - **Error Handling**: Wrap calls in try/catch blocks to handle custom `QLinkError` or unexpected errors.
 
 ## Development Environment Setup
@@ -147,11 +151,11 @@ run();
 Make sure to include these environment variables in your `.env` file:
 
 ```bash
-Q_LINK_USER=yourUsername
-Q_LINK_PASSWORD=yourPassword
-Q_LINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
-Q_LINK_INSTITUTION_ID=9999
-Q_LINK_LOG_LEVEL=DEBUG
+QLINK_USER=yourUsername
+QLINK_PASSWORD=yourPassword
+QLINK_URL=https://govtest.qlink.co.za/cgi-bin/XmlProc
+QLINK_INSTITUTION_ID=9999
+QLINK_LOG_LEVEL=DEBUG
 ```
 
 Now you’re all set to integrate with the QLink API using `qlink-pdi-client`!

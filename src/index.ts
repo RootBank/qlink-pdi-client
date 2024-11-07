@@ -26,7 +26,7 @@ export * from './models/qlink-client';
 // export * from './serialization/SEPDISerializer';
 
 // Utilities
-export * from './utils/date-helpers';
+// export * from './utils/date-helpers';
 
 // Types
 export * from './types';
