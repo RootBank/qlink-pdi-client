@@ -3,7 +3,13 @@
  * @param date The Date object to format.
  * @returns An object containing the formatted date strings.
  */
-export function formatDate(date: Date) {
+export function formatDate(date: Date): {
+  ccyyMM: string;
+  ccyyMM01: string;
+  ccyyMMLastDay: string;
+  ccyyMMLastDayOfPreviousMonth: string;
+  nullify: string;
+} {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
 
@@ -17,11 +23,27 @@ export function formatDate(date: Date) {
   const lastDayOfMonth = new Date(year, date.getMonth() + 1, 0).getDate();
   const ccyyMMLastDay = `${year}${month}${String(lastDayOfMonth).padStart(2, '0')}`;
 
+  // Calculate last day of the previous month correctly across year boundaries
+  const previousMonthDate = new Date(year, date.getMonth(), 0);
+  const previousYear = previousMonthDate.getFullYear();
+  const previousMonth = String(previousMonthDate.getMonth() + 1).padStart(2, '0');
+  const lastDayOfPreviousMonth = previousMonthDate.getDate();
+  const ccyyMMLastDayOfPreviousMonth = `${previousYear}${previousMonth}${String(lastDayOfPreviousMonth).padStart(2, '0')}`;
+
+  const nullify = "00000000";
+
   return {
     ccyyMM,
     ccyyMM01,
     ccyyMMLastDay,
+    ccyyMMLastDayOfPreviousMonth,
+    nullify,
   };
+}
+
+export function nullDate() {
+  const nullify = "00000000";
+  return nullify;
 }
 
 /**

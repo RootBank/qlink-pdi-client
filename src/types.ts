@@ -68,6 +68,64 @@ export interface CreateInsurancePayrollDeductionFields {
   endDate?: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
 }
 
+// export interface PremiumHolidayInsurancePayrollDeductionFields {
+
+// }
+
+export interface DeleteInsurancePayrollDeductionFields {
+  // tranType: TranType; // TranType enum:  QDEL
+  referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
+  endDate: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
+  employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
+  payrollIdentifier: PayrollIdentifier;
+  // startDate?: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
+  idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
+  surname?: string; // character set: [A-Z\s] only
+
+  cancelDeductionFrom: Date; // automatically deduces the SALMON and START DATE.
+}
+
+export interface UpdateReferenceFields {
+  referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
+  employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
+  payrollIdentifier: PayrollIdentifier;
+  // tranType: TranType; // TranType enum:  QFIX
+  // QFIX: Change the reference number or deduction type of a deduction
+  newDeductionType?: string; // only for QFIX 
+  correctReferenceNumber?: string; // only for QFIX for the Correct Reference Number
+
+  beginDeductionFrom: Date; // automatically deduces the SALMON and START DATE.
+  effectiveSalaryMonth?: string; // Salary month in CCYYMM format (SALMON)
+  startDate?: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
+
+  idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
+  surname?: string; // character set: [A-Z\s] only
+  endDate?: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
+}
+export interface UpdateAmountFields {
+  referenceNumber: string; // 20 character max. A unique number that identifies the transaction (for example an insurance policy number, medical aid membership number, a financial institution's loan account number, etc.). When an existing deduction is amended, deleted etc., the Reference Number provided must be identical to the number that appears on the Q LINK system, including leading 0's or any other characters, if applicable.
+  // tranType: TranType; // TranType enum: QUPD
+  employeeNumber: string; // Unique salary reference number that identifies the employee in the payroll. The value placed in this field must be identical to the number that appears on the latest payroll information, including leading 0's, if applicable.
+  payrollIdentifier: PayrollIdentifier;
+
+  // QFIX: Change the reference number or deduction type of a deduction
+  // newDeductType?: string; // only for QFIX for the Correct Reference Number
+  // corrRefNo?: string; // only for QFIX for the Correct Reference Number
+
+  // QUPD: Update an existing deduction by changing the amount
+  inflationUpdate?: string; // (Y/N). This field is used in a QUPD transaction and can have the value Y or N to indicate that the amount change was done for inflationary purposes or not. When omitted, it is deemed to be N.
+  amount: number; // cents The monthly amount to be deducted.
+
+  // mandateCapturedOn: MandateCapture; // For Insurance Institutions -- see enums SEPDIFlag alias MandateCapture
+  beginDeductionFrom: Date; // automatically deduces the SALMON and START DATE.
+  effectiveSalaryMonth?: string; // Salary month in CCYYMM format (SALMON)
+  startDate?: string; // CCYYMMDD || 00000000 for QDEL. The start date is the effective date for the specific transaction. Rules will be applied according to payroll requirements. • For PERSAL and DOD payrolls the start date must always be the first day of the effective salary month.
+
+  idNumber?: string; // The identity number of the employee. If the ID number is not known, the date of birth must be supplied in the format YYMMDD followed by seven 0's. In the case of some payrolls, for instance PERSAL, the ID Number is compulsory and must be supplied.
+  surname?: string; // character set: [A-Z\s] only
+  endDate?: string; // CCYYMMDD || 00000000. Compulsory for QDEL. For PERSAL and DOD the end date on a QDEL transaction must be the last day of the month previous to the effective salary month.
+}
+
 // SEPDI-specific fields
 export interface SEPDIPayrollDeductionFields {
   effectiveSalaryMonth: string; // Salary month in CCYYMM format (SALMON)

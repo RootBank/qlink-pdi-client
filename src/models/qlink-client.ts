@@ -1,6 +1,6 @@
 import axios, { Axios, AxiosError } from 'axios';
 import { QLinkError } from '../errors';
-import { EmployeeQueryParameter, SEPDIPayrollDeductionFields, Configuration, CreateInsurancePayrollDeductionFields } from '../types';
+import { EmployeeQueryParameter, SEPDIPayrollDeductionFields, Configuration, CreateInsurancePayrollDeductionFields, DeleteInsurancePayrollDeductionFields, UpdateReferenceFields, UpdateAmountFields } from '../types';
 import { Logger } from '../utils/logger-util';
 import { QLinkStatusCode } from '../enums/qlink-status-code';
 import { CommunicationTest } from './communication-test';
@@ -8,8 +8,11 @@ import { SEPDIPayrollDeduction } from './sepdi-payroll-deduction';
 import { QLinkRequest } from './qlink-request';
 import { Employee } from './government-employee';
 import { TranType } from '../enums/tran-type';
-import { formatDate, IdFromBirthDate } from '../utils/date-helpers';
+import { formatDate, IdFromBirthDate, nullDate } from '../utils/date-helpers';
 import { EmployeeStatus } from '../enums/employee-status';
+import { DeductionType } from '../enums/deduction-type';
+import { MandateCapture } from '../enums/sepdi-flag';
+import { formatToCharString } from '../utils/string-helpers';
 
 const logger = Logger.getInstance();
 
@@ -129,7 +132,7 @@ export class QLinkClient {
         surname: params.surname ? (params.surname) : (employee.surname ? employee.surname : "SURNAME"),
         initials: employee.empName ? employee.empName.split(" ")[0]?.slice(0, 2) : "A A",
         endDate: params.endDate,
-      }
+      } as SEPDIPayrollDeductionFields
 
       logger.debug(`Creating SEPDI Deduction for employee: ${JSON.stringify(deductionFields)}`);
       const newPayrollDeduction = await new SEPDIPayrollDeduction(this, deductionFields).save();
@@ -138,6 +141,116 @@ export class QLinkClient {
     } catch (error: any) {
       logger.error("new SEPDI Deduction failed", error);
       throw new QLinkError(`new SEPDI Deduction failed. ${error.message}`);
+    }
+  }
+
+  public async updateDeductionAmount(params: UpdateAmountFields): Promise<SEPDIPayrollDeduction> {
+    try {
+      logger.debug(`Finding employee: ${params.employeeNumber}`);
+      const employee = await this.queryEmployeeInfo({ employeeNumber: params.employeeNumber, payrollIdentifier: params.payrollIdentifier, idNumber: params.idNumber })
+      logger.debug(`Found employee: ${employee.employeeNumber}`);
+      if (employee.empStatus != EmployeeStatus.CURRENT) {
+        throw new QLinkError(`Employee (${employee.employeeNumber}) is not currently employed: ${employee.empStatus} ${employee.empStatusReason}`);
+      }
+
+      const deductionFields: SEPDIPayrollDeductionFields = {
+        payrollIdentifier: params.payrollIdentifier,
+        amount: params.amount,
+        deductionType: DeductionType.UNKNOWN,
+        employeeNumber: params.employeeNumber,
+        flag: MandateCapture.UNKNOWN,
+        referenceNumber: params.referenceNumber,
+        tranType: TranType.UPDATE_EXISTING_DEDUCTION,
+        effectiveSalaryMonth: params.effectiveSalaryMonth ? params.effectiveSalaryMonth : formatDate(params.beginDeductionFrom).ccyyMM,
+        startDate: formatDate(params.beginDeductionFrom).ccyyMM01,
+
+        idNumber: params.idNumber ? params.idNumber : IdFromBirthDate(employee.birthDate as string),
+        surname: params.surname ? (params.surname) : (employee.surname ? employee.surname : "SURNAME"),
+        initials: employee.empName ? employee.empName.split(" ")[0]?.slice(0, 2) : "A A",
+        endDate: params.endDate,
+      }
+
+      logger.debug(`Updating SEPDI Deduction for employee: ${JSON.stringify(deductionFields)}`);
+      const newPayrollDeduction = await new SEPDIPayrollDeduction(this, deductionFields).save();
+      logger.debug("SEPDI Deduction successfully updated");
+      return newPayrollDeduction;
+    } catch (error: any) {
+      logger.error("SEPDI Deduction update failed", error);
+      throw new QLinkError(`SEPDI Deduction update failed. ${error.message}`);
+    }
+  }
+
+  public async updateDeductionReferences(params: UpdateReferenceFields): Promise<SEPDIPayrollDeduction> {
+    try {
+      logger.debug(`Finding employee: ${params.employeeNumber}`);
+      const employee = await this.queryEmployeeInfo({ employeeNumber: params.employeeNumber, payrollIdentifier: params.payrollIdentifier, idNumber: params.idNumber })
+      logger.debug(`Found employee: ${employee.employeeNumber}`);
+      if (employee.empStatus != EmployeeStatus.CURRENT) {
+        throw new QLinkError(`Employee (${employee.employeeNumber}) is not currently employed: ${employee.empStatus} ${employee.empStatusReason}`);
+      }
+
+      const deductionFields: SEPDIPayrollDeductionFields = {
+        payrollIdentifier: params.payrollIdentifier,
+        amount: 0,
+        deductionType: DeductionType.UNKNOWN,
+        flag: MandateCapture.UNKNOWN,
+        employeeNumber: params.employeeNumber,
+        referenceNumber: params.referenceNumber,
+        corrRefNo: params.correctReferenceNumber,
+        newDeductType: params.newDeductionType,
+        tranType: TranType.CHANGE_REF_OR_DEDUCT_TYPE,
+        effectiveSalaryMonth: params.effectiveSalaryMonth ? params.effectiveSalaryMonth : formatDate(params.beginDeductionFrom).ccyyMM,
+        startDate: formatDate(params.beginDeductionFrom).ccyyMM01,
+
+        idNumber: params.idNumber ? params.idNumber : IdFromBirthDate(employee.birthDate as string),
+        surname: params.surname ? (params.surname) : (employee.surname ? employee.surname : "SURNAME"),
+        initials: employee.empName ? employee.empName.split(" ")[0]?.slice(0, 2) : "A A",
+        endDate: params.endDate,
+      }
+
+      logger.debug(`Fixing SEPDI Deduction for employee: ${JSON.stringify(deductionFields)}`);
+      const newPayrollDeduction = await new SEPDIPayrollDeduction(this, deductionFields).save();
+      logger.debug("SEPDI Deduction successfully fixed");
+      return newPayrollDeduction;
+    } catch (error: any) {
+      logger.error("SEPDI Deduction fix failed", error);
+      throw new QLinkError(`SEPDI Deduction fix failed. ${error.message}`);
+    }
+  }
+
+  public async deleteDeduction(params: DeleteInsurancePayrollDeductionFields): Promise<SEPDIPayrollDeduction> {
+    try {
+      logger.debug(`Finding employee: ${params.employeeNumber}`);
+      const employee = await this.queryEmployeeInfo({ employeeNumber: params.employeeNumber, payrollIdentifier: params.payrollIdentifier, idNumber: params.idNumber })
+      logger.debug(`Found employee: ${employee.employeeNumber}`);
+      if (employee.empStatus != EmployeeStatus.CURRENT) {
+        throw new QLinkError(`Employee (${employee.employeeNumber}) is not currently employed: ${employee.empStatus} ${employee.empStatusReason}`);
+      }
+
+      const deductionFields: SEPDIPayrollDeductionFields = {
+        amount: 0,
+        payrollIdentifier: params.payrollIdentifier,
+        employeeNumber: params.employeeNumber,
+        referenceNumber: params.referenceNumber,
+        tranType: TranType.DELETION,
+        deductionType: DeductionType.UNKNOWN,
+        flag: MandateCapture.UNKNOWN,
+        effectiveSalaryMonth: formatDate(params.cancelDeductionFrom).ccyyMM,
+        endDate: formatDate(params.cancelDeductionFrom).ccyyMMLastDayOfPreviousMonth,
+        startDate: nullDate(),
+
+        idNumber: params.idNumber ? params.idNumber : IdFromBirthDate(employee.birthDate as string),
+        surname: params.surname ? (params.surname) : (employee.surname ? employee.surname : "SURNAME"),
+        initials: employee.empName ? employee.empName.split(" ")[0]?.slice(0, 2) : "A A",
+      }
+
+      logger.debug(`Deleting SEPDI Deduction for employee: ${JSON.stringify(deductionFields)}`);
+      const deduction = await new SEPDIPayrollDeduction(this, deductionFields).save();
+      logger.debug("SEPDI Deduction successfully deleted");
+      return deduction;
+    } catch (error: any) {
+      logger.error("SEPDI Deduction deletion failed", error);
+      throw new QLinkError(`SEPDI Deduction deletion failed. ${error.message}`);
     }
   }
 
