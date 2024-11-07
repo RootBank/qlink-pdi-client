@@ -123,6 +123,7 @@ export class QLinkClient {
 
         idNumber: params.idNumber ? params.idNumber : IdFromBirthDate(employee.birthDate as string),
         surname: params.surname ? (params.surname) : (employee.surname ? employee.surname : "SURNAME"),
+        initials: employee.empName ? employee.empName.split(" ")[0]?.slice(0, 2) : "A A",
         endDate: params.endDate,
       }
 
