@@ -17,7 +17,11 @@ const main = async () => {
     } as Configuration
   )
 
-  await qlink.testConnection();
+  /** Test connection is failing of QA server
+   * 
+   * await qlink.testConnection();
+   * 
+   */
 
   const governmentEmployeeNumber = "84177942";
   const employee = await qlink.queryEmployeeInfo({ employeeNumber: governmentEmployeeNumber, payrollIdentifier: PayrollIdentifier.PERSAL });
@@ -38,6 +42,10 @@ const main = async () => {
   const results1 = await qlink.createInsurancePayrollDeduction(deductionFields);
   console.log(results1);
 
+  /**
+   * There is a delay required to update newly created mandates.
+   * Skip for now.
+   * 
   amount += 10000;
   const updateDeductionFields: UpdateAmountFields = {
     employeeNumber: governmentEmployeeNumber,
@@ -64,6 +72,9 @@ const main = async () => {
   const results3 = await qlink.updateDeductionReferences(fixDeductionFields);
   console.log(results3);
 
+  */
+
+  // Delete the newly created deduction mandate.
   const delDeductionFields: DeleteInsurancePayrollDeductionFields = {
     employeeNumber: governmentEmployeeNumber,
     payrollIdentifier: PayrollIdentifier.PERSAL,
