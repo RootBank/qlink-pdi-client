@@ -29,10 +29,9 @@ export class QLinkFile {
   public async sendBulkRequest(request: QLinkRequest): Promise<string> {
     const fileData = request.toFile();
 
-    // logger.info('Creating QLink file');
-    // logger.debug(`Request File:\n${fileData}`);
-
+    logger.info('Creating QLink file');
     logger.info(fileData);
+    logger.debug(`\nRequest File:\n${fileData}`);
     return fileData;
   }
 

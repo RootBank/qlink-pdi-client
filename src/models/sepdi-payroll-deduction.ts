@@ -316,11 +316,7 @@ export class SEPDIPayrollDeduction extends QLinkBase implements SEPDIPayrollDedu
   }
 
   async save(): Promise<SEPDIPayrollDeduction> {
-    this.validate();
-
-    const header = new Header(this.client.connectionConfig(), { transactionType: this.transactionType, effectiveSalaryMonth: this.effectiveSalaryMonth, payrollIdentifier: this.payrollIdentifier });
-
-    const requestData = new QLinkRequest(header, this);
+    const requestData = this.lazySave();
 
     logger.debug(`Saving SEPDI Payroll Deduction with request data: ${JSON.stringify(requestData)}`);
     try {

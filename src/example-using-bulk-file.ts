@@ -42,7 +42,7 @@ const main = async () => {
   }
   const results2 = await qlink.createInsurancePayrollDeduction(deductionFields2);
 
-  const request = new QLinkRequest(results1.header, [results1, results2]);
+  const request = new QLinkRequest(results1.header, [results1.data[0], results2.data[0]]);
   qlink.sendBulkRequest(request)
 };
 

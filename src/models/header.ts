@@ -105,7 +105,7 @@ export class Header extends QLinkBase implements Configuration {
     // This is a sequence control number that starts at 1 for each client/payroll combination and increases by 1 for each file that is submitted to Q LINK.
     const sequenceNumber: string = '1';
     return (
-      `--SAMPLE FILE ONLY. Do not use this in production--` +
+      `--SAMPLE FILE ONLY. Do not use this in production--\n` +
       `QTOP${clientIdentifier1.padEnd(4, ' ')}`
       + `${this.payrollIdentifier.padEnd(4, ' ')}${layoutIdentifier.padEnd(4, ' ')}`
       + `${layoutRevision.padEnd(3, ' ')}${sequenceNumber.padEnd(4, ' ')}`
